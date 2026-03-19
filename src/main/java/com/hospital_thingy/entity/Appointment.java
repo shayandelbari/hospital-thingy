@@ -22,22 +22,6 @@ public class Appointment {
     }
 
     private List<MedicalRecord> medicalRecords;
-
-
-    public abstract class MedicalRecord {
-        private int id;
-        private LocalDateTime dateTime;
-        private String notes;
-    }
-
-    public class VitalSign extends MedicalRecord {
-        private int weight;
-        private int heartRate;
-        private int[] bloodPressure;
-        private int temperature;
-        private int o2Stats;
-    }
-
     public class Imaging extends MedicalRecord {
         private String description;
         private byte[] image;
