@@ -1,6 +1,7 @@
 package com.hospital_thingy.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -16,9 +17,30 @@ public class Appointment {
         UPCOMING,
         IN_PROGRESS,
         COMPLETED,
+        POSTPONED, // if we decided not to update appointments and create another one as part of the "update"
         CANCELLED
     }
 
     private List<MedicalRecord> medicalRecords;
+
+
+    public abstract class MedicalRecord {
+        private int id;
+        private LocalDateTime dateTime;
+        private String notes;
+    }
+
+    public class VitalSign extends MedicalRecord {
+        private int weight;
+        private int heartRate;
+        private int[] bloodPressure;
+        private int temperature;
+        private int o2Stats;
+    }
+
+    public class Imaging extends MedicalRecord {
+        private String description;
+        private byte[] image;
+    }
 }
 
