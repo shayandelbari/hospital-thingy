@@ -10,6 +10,7 @@ public class Doctor {
     private Speciality[] specialities;
     private List<Appointment> appointments;
 
+
     public enum Speciality
     {
         CARDIOLOGY,
