@@ -12,3 +12,11 @@ Responsibilities:
 - Keep error handling centralized
 
 This improves code clarity and API reliability.
+
+CHECKS ALL SERVICES FOR EACH CLASS NEED TO HAVE:
+- Empty/missing data  
+- Patient cant be deleted if it has appointments
+- Doctor cant be deleted if it has appointments
+- Id doesn't exist (Fk doesn't exist)
+- Invalid data entered (names, data, etc) (datatypes)
+- 
