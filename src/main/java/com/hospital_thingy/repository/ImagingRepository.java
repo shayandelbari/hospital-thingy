@@ -1,4 +1,4 @@
 package com.hospital_thingy.repository;
 
-public class DoctorRepo {
+public class ImagingRepository {
 }
