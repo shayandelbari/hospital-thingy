@@ -14,4 +14,24 @@ public abstract class MedicalRecord {
     @Column(nullable = false)
     private LocalDateTime dateTime;
     private String notes;
+
+    public Long getId() {
+        return id;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 }
