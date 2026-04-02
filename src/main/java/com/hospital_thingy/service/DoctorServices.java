@@ -2,6 +2,7 @@ package com.hospital_thingy.service;
 
 import com.hospital_thingy.mapper.DoctorMapper;
 import com.hospital_thingy.repository.DoctorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
