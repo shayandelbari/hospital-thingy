@@ -1,26 +1,30 @@
 package com.hospital_thingy.service;
 
+import com.hospital_thingy.DTO.MedicalRecordDTO;
+import com.hospital_thingy.DTO.VitalSignDTO;
+import com.hospital_thingy.entity.Appointment;
 import com.hospital_thingy.entity.MedicalRecord;
 import com.hospital_thingy.entity.VitalSign;
 import com.hospital_thingy.exception.EntityCreationException;
+import com.hospital_thingy.mapper.MedicalRecordMapper;
 import com.hospital_thingy.repository.MedicalRecordRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 
 // reference documentation: https://www.javaguides.net/2025/03/spring-boot-architecture.html
 @Service
 public class MedicalRecordServices {
     private final MedicalRecordRepository medicalRecordRepository;
- //   private final MedicalRecordMapper medicalRecordMapper;
+    private final MedicalRecordMapper medicalRecordMapper;
 
-    public MedicalRecordServices(MedicalRecordRepository medicalRecordRepository
-//            , MedicalRecordMapper medicalRecordMapper
-    ) {
+
+    public MedicalRecordServices(MedicalRecordRepository medicalRecordRepository, MedicalRecordMapper medicalRecordMapper) {
         this.medicalRecordRepository = medicalRecordRepository;
-//        this.medicalRecordMapper = medicalRecordMapper;
+        this.medicalRecordMapper = medicalRecordMapper;
     }
 
     // Example: medical-record service can use a concrete mapper such as
@@ -35,17 +39,23 @@ public class MedicalRecordServices {
     // There is NO delete of update functions
         // once a medical record exist, the clinic cannot change or delete it (in accordance to law)
 
-    public List<MedicalRecord> getAllMedicalRecords() {
+    public List<MedicalRecordDTO> getAllMedicalRecords() {
 
-        return medicalRecordRepository.findAll();
+        return medicalRecordRepository.findAll()
+                                    .stream()
+                                    .map(medicalRecordMapper::toDto)
+                                    .toList();
     }
 
-    public Optional<MedicalRecord> getMedicalRecordById(Long id) {
-        return medicalRecordRepository.findById(id);
+
+    public Stream<MedicalRecordDTO> getMedicalRecordById(Long id) {
+        return medicalRecordRepository.findById(id)
+                                    .stream()
+                                    .map(medicalRecordMapper::toDto);
     }
 
 
-    public void CreateMedicalRecord (MedicalRecord rec) {
+    public void CreateMedicalRecord (MedicalRecordDTO rec) {
 
         /*
         VALIDATIONS:
@@ -62,65 +72,71 @@ public class MedicalRecordServices {
          - all are ints that fall in respective ranges
          - all are optional, one check a Dr might just track weight, and another they might only track HR and BP.
          */
+        if (rec instanceof VitalSignDTO) {
 
-        if (rec instanceof VitalSign) {
-
-            if (((VitalSign) rec).getWeight() != null &
-                    ((VitalSign) rec).getWeight() < 0 |
-                    ((VitalSign) rec).getWeight() > 2000) {
+            if (((VitalSignDTO) rec).getWeight() != null &
+                    ((VitalSignDTO) rec).getWeight() < 0 |
+                    ((VitalSignDTO) rec).getWeight() > 2000) {
                 throw new EntityCreationException("Patient's weight must be between 0 and 1000 kg");
             }
 
-            if (((VitalSign) rec).getHeartRate() != null &
-                    ((VitalSign) rec).getHeartRate() < 0 |
-                    ((VitalSign) rec).getHeartRate() > 300) {
+            if (((VitalSignDTO) rec).getHeartRate() != null &
+                    ((VitalSignDTO) rec).getHeartRate() < 0 |
+                    ((VitalSignDTO) rec).getHeartRate() > 300) {
                 throw new EntityCreationException("Patient's heart rate must be between 0 and 300 bmp");
             }
 
-            if (((VitalSign) rec).getSystolicBP() != null &
-                    ((VitalSign) rec).getSystolicBP() < 0 |
-                    ((VitalSign) rec).getSystolicBP() > 400) {
+            if (((VitalSignDTO) rec).getSystolicBP() != null &
+                    ((VitalSignDTO) rec).getSystolicBP() < 0 |
+                    ((VitalSignDTO) rec).getSystolicBP() > 400) {
                 throw new EntityCreationException("Patient's systolic BP must be between 0 and 400 mmHg");
             }
 
-            if (((VitalSign) rec).getDiastolicBP() != null &
-                    ((VitalSign) rec).getDiastolicBP() < 0 |
-                    ((VitalSign) rec).getDiastolicBP() > 400) {
+            if (((VitalSignDTO) rec).getDiastolicBP() != null &
+                    ((VitalSignDTO) rec).getDiastolicBP() < 0 |
+                    ((VitalSignDTO) rec).getDiastolicBP() > 400) {
                 throw new EntityCreationException("Patient's diastolic BP must be between 0 and 400 mmHg");
             }
 
-            if (((VitalSign) rec).getSystolicBP() != null &
-                    ((VitalSign) rec).getDiastolicBP() != null &
-                    (((VitalSign) rec).getDiastolicBP() > ((VitalSign) rec).getSystolicBP())) {
+            if (((VitalSignDTO) rec).getSystolicBP() != null &
+                    ((VitalSignDTO) rec).getDiastolicBP() != null &
+                    (((VitalSignDTO) rec).getDiastolicBP() > ((VitalSignDTO) rec).getSystolicBP())) {
                 throw new EntityCreationException("Patient's diastolic BP cannot be larger than their systolic BP");
             }
 
-            if (((VitalSign) rec).getTemperature() != null &
-                    ((VitalSign) rec).getTemperature() < 10 |
-                    ((VitalSign) rec).getTemperature() > 50) {
+            if (((VitalSignDTO) rec).getTemperature() != null &
+                    ((VitalSignDTO) rec).getTemperature() < 10 |
+                    ((VitalSignDTO) rec).getTemperature() > 50) {
                 throw new EntityCreationException("Patient's temperature must be between 10 and 50 °C");
             }
 
-            if (((VitalSign) rec).getO2Saturation() != null &
-                    ((VitalSign) rec).getO2Saturation() < 0 |
-                    ((VitalSign) rec).getO2Saturation() > 100) {
+            if (((VitalSignDTO) rec).getO2Saturation() != null &
+                    ((VitalSignDTO) rec).getO2Saturation() < 0 |
+                    ((VitalSignDTO) rec).getO2Saturation() > 100) {
                 throw new EntityCreationException("Patient's oxygen saturation must be between 0 and 100 %");
             }
+
+            VitalSign temp = (VitalSign) medicalRecordMapper.toEntity(rec);
+            medicalRecordRepository.save(temp);
         }
 
         /*
         else // rec is an instance of Imaging
         {
             //TODO in next Sprint:
-            // - accept on the valid type of images (png, jpeg, etc.)
-            // - convert image file to byte [] before passing it to the repository layer
+            // - accept only the valid types of images (png, jpeg, etc.)
+            // - convert image file to byte[] before passing it to the repository layer
 
-            // we decided to not do this Sprint as the deliverable is only a command line based UI → this will only really make sense to implement once we have a GUI
+            // we decided to not do it this Sprint as the deliverable is only a command line based UI → this will only really make sense to implement once we have a GUI
+
+            // TODO when implementing - convert DTO to Imaging Entity
+            Imaging temp = (Imaging) medicalRecordMapper.toEntity(rec);
+            medicalRecordRepository.save(temp);
+
         }
         */
 
-        //TODO once we implement the DTOs, we will need to convert the DTO to an Entity before calling save(rec);
-        medicalRecordRepository.save(rec);
+
 
     }
 }

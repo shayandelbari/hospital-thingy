@@ -15,4 +15,20 @@ public abstract class MedicalRecordDTO {
         this.dateTime = dateTime;
         this.notes = notes;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 }

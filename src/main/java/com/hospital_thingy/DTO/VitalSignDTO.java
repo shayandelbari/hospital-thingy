@@ -23,4 +23,52 @@ public class VitalSignDTO extends MedicalRecordDTO {
         this.temperature = temperature;
         this.o2Saturation = o2Saturation;
     }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
+    }
+
+    public Integer getHeartRate() {
+        return heartRate;
+    }
+
+    public void setHeartRate(Integer heartRate) {
+        this.heartRate = heartRate;
+    }
+
+    public Integer getSystolicBP() {
+        return systolicBP;
+    }
+
+    public void setSystolicBP(Integer systolicBP) {
+        this.systolicBP = systolicBP;
+    }
+
+    public Integer getDiastolicBP() {
+        return diastolicBP;
+    }
+
+    public void setDiastolicBP(Integer diastolicBP) {
+        this.diastolicBP = diastolicBP;
+    }
+
+    public Integer getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(Integer temperature) {
+        this.temperature = temperature;
+    }
+
+    public Integer getO2Saturation() {
+        return o2Saturation;
+    }
+
+    public void setO2Saturation(Integer o2Saturation) {
+        this.o2Saturation = o2Saturation;
+    }
 }
