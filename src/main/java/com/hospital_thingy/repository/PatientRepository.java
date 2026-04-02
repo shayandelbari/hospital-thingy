@@ -42,6 +42,8 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     @Query ("UPDATE patient p SET phone_number = phone WHERE id = pId")
     void UpdatePatientPhoneNumber(Long pId, BigInteger phone);
 
+//    @Query ("")
+//    Patient CheckExistingData(Patient p);
 
 }
 
