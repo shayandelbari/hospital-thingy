@@ -19,5 +19,4 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
      * findAll(); → read and return ALL Medical Records (as List)
      * deleteById(id) → delete
      */
-
 }

@@ -2,7 +2,7 @@ package com.hospital_thingy.service;
 
 import com.hospital_thingy.entity.Appointment;
 import com.hospital_thingy.exception.EntityCreationException;
-import com.hospital_thingy.exception.EntityDeleteException;
+import com.hospital_thingy.exception.DeletionFailedException;
 import com.hospital_thingy.exception.EntityNotFoundException;
 import com.hospital_thingy.exception.EntityUpdateException;
 import com.hospital_thingy.repository.AppointmentRepository;
@@ -75,7 +75,7 @@ public class AppointmentServices {
      * Cancels an appointment by setting its status to CANCELLED.
      * @param entity the appointment to cancel
      * @throws EntityNotFoundException if the appointment is not found
-     * @throws EntityDeleteException if cancellation fails
+     * @throws DeletionFailedException if cancellation fails
      * @since 1.0
      */
     public void CancelAppointment(Appointment entity) {
@@ -86,7 +86,7 @@ public class AppointmentServices {
         try { apptRepo.save(toCancel); }
         catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new EntityDeleteException("Couldn't delete the appointment provided " + entity.getId());
+            throw new DeletionFailedException("Couldn't delete the appointment provided " + entity.getId());
         }
     }
 
