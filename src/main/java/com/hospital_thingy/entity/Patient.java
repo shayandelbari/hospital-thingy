@@ -55,9 +55,6 @@ public class Patient {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
 
     public Long getPhoneNumber() {
         return phoneNumber;
@@ -71,9 +68,6 @@ public class Patient {
         return insuranceNumber;
     }
 
-    public void setInsuranceNumber(String insuranceNumber) {
-        this.insuranceNumber = insuranceNumber;
-    }
 
     public Boolean getStatus() {
         return status;
