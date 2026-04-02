@@ -3,6 +3,15 @@ package com.hospital_thingy.repository;
 import com.hospital_thingy.entity.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/**
+ * Represents the data access layer through the use of spring boot's Jpa
+ * and entity objects which essentially translates SQL queries into
+ * runnable methods. Built-in JpaRepository should suffice for now.
+ *
+ * @author Abdulrahman Mousa
+ * @version 1.0
+ * @since 2026-04-02
+ */
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
     /* InBuilt CRUD Fns:
      * save(MedicalRecord); → create
