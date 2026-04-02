@@ -27,7 +27,17 @@ public class PatientServices {
     // }
 
     //SELECT everything
-    public List<Patient> GetAllPatients(){
+    public List<Patient> GetAllPatients() {
         return patientRepository.findAll();
     }
+
+    //SELECT patients appointment by patient id
+    public List<Appointment> GetPatientAppointments(Long id){
+        return patientRepository.findByPatientId(id);
+    }
+
+
+
+
+
 }

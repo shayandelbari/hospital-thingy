@@ -1,10 +1,10 @@
 package com.hospital_thingy.service;
 
 import com.hospital_thingy.entity.Appointment;
-import com.hospital_thingy.exception.appointment.AppointmentCreateException;
-import com.hospital_thingy.exception.appointment.AppointmentDeleteException;
-import com.hospital_thingy.exception.appointment.AppointmentNotFound;
-import com.hospital_thingy.exception.appointment.AppointmentUpdateException;
+import com.hospital_thingy.exception.EntityCreationException;
+import com.hospital_thingy.exception.EntityDeleteException;
+import com.hospital_thingy.exception.EntityNotFoundException;
+import com.hospital_thingy.exception.EntityUpdateException;
 import com.hospital_thingy.repository.AppointmentRepository;
 
 import java.util.List;
@@ -43,22 +43,22 @@ public class AppointmentServices {
     /**
      * Creates a new appointment.
      * @param entity the appointment to create
-     * @throws AppointmentCreateException if creation fails
+     * @throws EntityCreationException if creation fails
      * @since 1.0
      */
     public void CreateAppointment(Appointment entity) {
         try { apptRepo.save(entity); }
         catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new AppointmentCreateException("Couldn't create the appointment provided " + entity.getId());
+            throw new EntityCreationException("Couldn't create the appointment provided " + entity.getId());
         }
     }
 
     /**
      * Updates an existing appointment.
      * @param entity the appointment to update
-     * @throws AppointmentNotFound if the appointment is not found
-     * @throws AppointmentUpdateException if update fails
+     * @throws EntityNotFoundException if the appointment is not found
+     * @throws EntityUpdateException if update fails
      * @since 1.0
      */
     public void UpdateAppointment(Appointment entity) {
@@ -67,15 +67,15 @@ public class AppointmentServices {
         try { apptRepo.save(entity); }
         catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new AppointmentUpdateException("Couldn't update the appointment provided " + entity.getId());
+            throw new EntityUpdateException("Couldn't update the appointment provided " + entity.getId());
         }
     }
 
     /**
      * Cancels an appointment by setting its status to CANCELLED.
      * @param entity the appointment to cancel
-     * @throws AppointmentNotFound if the appointment is not found
-     * @throws AppointmentDeleteException if cancellation fails
+     * @throws EntityNotFoundException if the appointment is not found
+     * @throws EntityDeleteException if cancellation fails
      * @since 1.0
      */
     public void CancelAppointment(Appointment entity) {
@@ -86,7 +86,7 @@ public class AppointmentServices {
         try { apptRepo.save(toCancel); }
         catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new AppointmentDeleteException("Couldn't delete the appointment provided " + entity.getId());
+            throw new EntityDeleteException("Couldn't delete the appointment provided " + entity.getId());
         }
     }
 
@@ -94,13 +94,13 @@ public class AppointmentServices {
      * Retrieves an appointment by its ID.
      * @param id the ID of the appointment
      * @return the appointment
-     * @throws AppointmentNotFound if the appointment is not found
+     * @throws EntityNotFoundException if the appointment is not found
      * @since 1.0
      */
     public Appointment GetById(Long id) {
         Optional<Appointment> appt = apptRepo.findById(id);
         if (appt.isPresent())
             return appt.get();
-        throw new AppointmentNotFound("Cannot find the requested appointment");
+        throw new EntityNotFoundException("Cannot find the requested appointment");
     }
 }
