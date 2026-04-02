@@ -15,6 +15,10 @@ public abstract class MedicalRecord {
     private LocalDateTime dateTime;
     private String notes;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "appointment_id", nullable = false)
+    private Appointment appointment;
+
     public Long getId() {
         return id;
     }
