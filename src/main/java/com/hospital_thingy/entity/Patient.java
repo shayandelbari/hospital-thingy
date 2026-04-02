@@ -24,6 +24,10 @@ public class Patient {
     @Column(nullable = false, unique = true)
     private String insuranceNumber;
 
+    //TODO ADD STUDENT STATUS (BOOL TURNS TO BIT)
+    @Column(nullable = false)
+    private Boolean status;
+
     @OneToMany(mappedBy = "patient",  cascade = CascadeType.ALL)
     private List<Appointment> appointments;
 
@@ -70,6 +74,8 @@ public class Patient {
     public void setInsuranceNumber(String insuranceNumber) {
         this.insuranceNumber = insuranceNumber;
     }
+
+
 
     public List<Appointment> getAppointments() {
         return appointments;

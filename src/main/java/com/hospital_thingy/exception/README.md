@@ -19,4 +19,3 @@ CHECKS ALL SERVICES FOR EACH CLASS NEED TO HAVE:
 - Doctor cant be deleted if it has appointments
 - Id doesn't exist (Fk doesn't exist)
 - Invalid data entered (names, data, etc) (datatypes)
-- 
