@@ -1,8 +1,13 @@
 package com.hospital_thingy.service;
 
+import org.springframework.stereotype.Service;
+
 import com.hospital_thingy.mapper.PatientMapper;
 import com.hospital_thingy.repository.PatientRepository;
-import org.springframework.stereotype.Service;
+import com.hospital_thingy.entity.Appointment;
+import com.hospital_thingy.entity.Patient;
+
+import java.util.List;
 
 @Service
 public class PatientServices {
@@ -20,4 +25,9 @@ public class PatientServices {
     // var savedPatient = patientRepository.save(patient);
     // return patientMapper.toDto(savedPatient);
     // }
+
+    //SELECT everything
+    public List<Patient> GetAllPatients(){
+        return patientRepository.findAll();
+    }
 }
