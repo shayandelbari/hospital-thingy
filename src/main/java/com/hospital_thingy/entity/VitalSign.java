@@ -4,49 +4,68 @@ import jakarta.persistence.Entity;
 
 @Entity
 public class VitalSign extends MedicalRecord {
-    private int weight;
-    private int heartRate;
-    private int[] bloodPressure;
-    private int temperature;
-    private int o2Stats;
+    private Integer weight;
+    private Integer heartRate;
+    private Integer systolicBP;
+    private Integer diastolicBP;
+    private Integer temperature;
+    private Integer o2Saturation;
+    //these are type Integer and not the primative type int, as Integer is nullable, which is important for the VitalSign class
 
-    public int getWeight() {
+    public Integer getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(Integer weight) {
         this.weight = weight;
     }
 
-    public int getHeartRate() {
+    public Integer getHeartRate() {
         return heartRate;
     }
 
-    public void setHeartRate(int heartRate) {
+    public void setHeartRate(Integer heartRate) {
         this.heartRate = heartRate;
     }
 
-    public int[] getBloodPressure() {
-        return bloodPressure;
+    public Integer getSystolicBP() {
+        return systolicBP;
     }
 
-    public void setBloodPressure(int[] bloodPressure) {
-        this.bloodPressure = bloodPressure;
+    public void setSystolicBP(Integer systolicBP) {
+        this.systolicBP = systolicBP;
     }
 
-    public int getTemperature() {
+    public Integer getDiastolicBP() {
+        return diastolicBP;
+    }
+
+    public void setDiastolicBP(Integer diastolicBP) {
+        this.diastolicBP = diastolicBP;
+    }
+
+    public Integer getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(int temperature) {
+    public void setTemperature(Integer temperature) {
         this.temperature = temperature;
     }
 
-    public int getO2Stats() {
-        return o2Stats;
+    public Integer getO2Saturation() {
+        return o2Saturation;
     }
 
-    public void setO2Stats(int o2Stats) {
-        this.o2Stats = o2Stats;
+    public void setO2Saturation(Integer o2Saturation) {
+        this.o2Saturation = o2Saturation;
+    }
+
+
+    public VitalSign() {
+        super();
+    }
+
+    public VitalSign(String notes) {
+        super(notes);
     }
 }

@@ -23,8 +23,19 @@ public abstract class MedicalRecord {
         return dateTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    // This will be done in the constructor instead
+    //
+    //public void setDateTime(LocalDateTime dateTime) {
+    //    this.dateTime = dateTime;
+    //}
+
+    public MedicalRecord(String notes) {
+        this.notes = notes;
+        this.dateTime = LocalDateTime.now();
+    }
+
+    public MedicalRecord() {
+        this.dateTime = LocalDateTime.now();
     }
 
     public String getNotes() {
@@ -34,4 +45,7 @@ public abstract class MedicalRecord {
     public void setNotes(String notes) {
         this.notes = notes;
     }
+
 }
+
+
