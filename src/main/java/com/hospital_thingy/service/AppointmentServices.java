@@ -1,10 +1,12 @@
 package com.hospital_thingy.service;
 
+import com.hospital_thingy.DTO.AppointmentDTO;
 import com.hospital_thingy.entity.Appointment;
 import com.hospital_thingy.exception.EntityCreationException;
 import com.hospital_thingy.exception.DeletionFailedException;
 import com.hospital_thingy.exception.EntityNotFoundException;
 import com.hospital_thingy.exception.EntityUpdateException;
+import com.hospital_thingy.mapper.AppointmentMapper;
 import com.hospital_thingy.repository.AppointmentRepository;
 
 import java.util.List;
@@ -21,13 +23,16 @@ import java.util.Optional;
  */
 public class AppointmentServices {
     final private AppointmentRepository apptRepo;
+    final private AppointmentMapper apptMapper;
 
     /**
      * Constructs an AppointmentServices with the given repository.
      * @param repo the appointment repository
+     * @param mapper the appointment mapper (DTO : Entity)
      */
-    public AppointmentServices(AppointmentRepository repo) {
+    public AppointmentServices(AppointmentRepository repo, AppointmentMapper mapper) {
         apptRepo = repo;
+        apptMapper = mapper;
     }
 
     /**
@@ -36,8 +41,8 @@ public class AppointmentServices {
      * @return List of the appointments
      * @since 1.0
      */
-    public List<Appointment> GetAll() {
-        return apptRepo.findAll();
+    public List<AppointmentDTO> GetAll() {
+        return apptMapper.toDtoList(apptRepo.findAll());
     }
 
     /**
@@ -46,11 +51,11 @@ public class AppointmentServices {
      * @throws EntityCreationException if creation fails
      * @since 1.0
      */
-    public void CreateAppointment(Appointment entity) {
-        try { apptRepo.save(entity); }
+    public void CreateAppointment(AppointmentDTO entity) {
+        try { apptRepo.save(apptMapper.toEntity(entity)); }
         catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new EntityCreationException("Couldn't create the appointment provided " + entity.getId());
+            throw new EntityCreationException("Couldn't create the appointment provided " + entity.id);
         }
     }
 
@@ -61,13 +66,13 @@ public class AppointmentServices {
      * @throws EntityUpdateException if update fails
      * @since 1.0
      */
-    public void UpdateAppointment(Appointment entity) {
-        GetById(entity.getId()); // Will throw an exception if failed to find the id
+    public void UpdateAppointment(AppointmentDTO entity) {
+        GetById(entity.id); // Will throw an exception if failed to find the id
 
-        try { apptRepo.save(entity); }
+        try { apptRepo.save(apptMapper.toEntity(entity)); }
         catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new EntityUpdateException("Couldn't update the appointment provided " + entity.getId());
+            throw new EntityUpdateException("Couldn't update the appointment provided " + entity.id);
         }
     }
 
@@ -78,15 +83,15 @@ public class AppointmentServices {
      * @throws DeletionFailedException if cancellation fails
      * @since 1.0
      */
-    public void CancelAppointment(Appointment entity) {
-        Appointment toCancel = GetById(entity.getId()); // Will throw an exception if failed to find the id
+    public void CancelAppointment(AppointmentDTO entity) {
+        AppointmentDTO toCancel = GetById(entity.id); // Will throw an exception if failed to find the id
 
-        toCancel.setStatus(Appointment.Status.CANCELLED);
+        toCancel.status = Appointment.Status.CANCELLED;
 
-        try { apptRepo.save(toCancel); }
+        try { apptRepo.save(apptMapper.toEntity(entity)); }
         catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new DeletionFailedException("Couldn't delete the appointment provided " + entity.getId());
+            throw new DeletionFailedException("Couldn't delete the appointment provided " + entity.id);
         }
     }
 
@@ -97,10 +102,10 @@ public class AppointmentServices {
      * @throws EntityNotFoundException if the appointment is not found
      * @since 1.0
      */
-    public Appointment GetById(Long id) {
+    public AppointmentDTO GetById(Long id) {
         Optional<Appointment> appt = apptRepo.findById(id);
         if (appt.isPresent())
-            return appt.get();
+            return apptMapper.toDto(appt.get());
         throw new EntityNotFoundException("Cannot find the requested appointment");
     }
 }
