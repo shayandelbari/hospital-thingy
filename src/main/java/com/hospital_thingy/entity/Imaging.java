@@ -7,6 +7,7 @@ public class Imaging extends MedicalRecord {
     private String description;
     private byte[] image;
 
+
     public String getDescription() {
         return description;
     }
@@ -22,4 +23,15 @@ public class Imaging extends MedicalRecord {
     public void setImage(byte[] image) {
         this.image = image;
     }
+
+
+
+    public Imaging() {
+        super();
+    }
+
+    public Imaging (String notes) {
+        super(notes);
+    }
+
 }

@@ -14,8 +14,4 @@ public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Lo
      * findAll(); → read and return ALL Medical Records (as List)
      * deleteById(id) → delete
      */
-
-
-
-
 }

@@ -35,7 +35,8 @@ public class Doctor {
         ONCOLOGY,
         PSYCHIATRY,
         OPHTHALMOLOGY,
-        GASTROENTEROLOGY
+        GASTROENTEROLOGY,
+        OTORHINOLARYNGOLOGY
     }
 
 
