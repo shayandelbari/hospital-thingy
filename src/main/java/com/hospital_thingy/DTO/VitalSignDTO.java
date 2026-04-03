@@ -13,9 +13,9 @@ public class VitalSignDTO extends MedicalRecordDTO {
     public VitalSignDTO() {
     }
 
-    public VitalSignDTO(Long id, LocalDateTime dateTime, String notes, Integer weight, Integer heartRate,
+    public VitalSignDTO(Long id, LocalDateTime dateTime, String notes, Long appointmentId, Integer weight, Integer heartRate,
             Integer systolicBP, Integer diastolicBP, Integer temperature, Integer o2Saturation) {
-        super(id, dateTime, notes);
+        super(id, dateTime, notes, appointmentId);
         this.weight = weight;
         this.heartRate = heartRate;
         this.systolicBP = systolicBP;

@@ -8,8 +8,8 @@ public class ImagingDTO extends MedicalRecordDTO {
     public ImagingDTO() {
     }
 
-    public ImagingDTO(Long id, LocalDateTime dateTime, String notes, byte[] image) {
-        super(id, dateTime, notes);
+    public ImagingDTO(Long id, LocalDateTime dateTime, String notes, Long appointmentId, byte[] image) {
+        super(id, dateTime, notes, appointmentId);
         this.image = image;
     }
 
