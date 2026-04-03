@@ -1,13 +1,10 @@
 package com.hospital_thingy.service;
 
-import com.hospital_thingy.DTO.AppointmentDTO;
 import com.hospital_thingy.DTO.MedicalRecordDTO;
 import com.hospital_thingy.DTO.VitalSignDTO;
 import com.hospital_thingy.entity.Appointment;
-import com.hospital_thingy.entity.MedicalRecord;
 import com.hospital_thingy.entity.VitalSign;
 import com.hospital_thingy.exception.EntityCreationException;
-import com.hospital_thingy.mapper.AppointmentMapper;
 import com.hospital_thingy.mapper.MedicalRecordMapper;
 import com.hospital_thingy.repository.AppointmentRepository;
 import com.hospital_thingy.repository.MedicalRecordRepository;
@@ -17,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-
 // reference documentation: https://www.javaguides.net/2025/03/spring-boot-architecture.html
 @Service
 public class MedicalRecordServices {
@@ -25,8 +21,8 @@ public class MedicalRecordServices {
     private final MedicalRecordMapper medicalRecordMapper;
     private final AppointmentRepository appointmentRepository;
 
-
-    public MedicalRecordServices(MedicalRecordRepository medicalRecordRepository, MedicalRecordMapper medicalRecordMapper, AppointmentRepository appointmentRepository) {
+    public MedicalRecordServices(MedicalRecordRepository medicalRecordRepository,
+            MedicalRecordMapper medicalRecordMapper, AppointmentRepository appointmentRepository) {
         this.medicalRecordRepository = medicalRecordRepository;
         this.medicalRecordMapper = medicalRecordMapper;
         this.appointmentRepository = appointmentRepository;
@@ -42,41 +38,42 @@ public class MedicalRecordServices {
     // }
 
     // There is NO delete of update functions
-        // once a medical record exist, the clinic cannot change or delete it (in accordance to law)
+    // once a medical record exist, the clinic cannot change or delete it (in
+    // accordance to law)
 
     public List<MedicalRecordDTO> getAllMedicalRecords() {
 
         return medicalRecordRepository.findAll()
-                                    .stream()
-                                    .map(medicalRecordMapper::toDto)
-                                    .toList();
+                .stream()
+                .map(medicalRecordMapper::toDto)
+                .toList();
     }
-
 
     public Stream<MedicalRecordDTO> getMedicalRecordById(Long id) {
         return medicalRecordRepository.findById(id)
-                                    .stream()
-                                    .map(medicalRecordMapper::toDto);
+                .stream()
+                .map(medicalRecordMapper::toDto);
     }
 
-
-    public void createMedicalRecord (MedicalRecordDTO rec) {
+    public void createMedicalRecord(MedicalRecordDTO rec) {
 
         /*
-        VALIDATIONS:
-        - medical record cannot be created without an associated appointment
-
-        Parent:
-         - ID generated in DB → nothing to check
-         - LocalDateTime is made by the constructor → nothing to check
-         - notes can be empty or can hold basically anything, no validations for the parent class
-
-         Imaging:
-         - Must provide an image
-
-         Vitals:
-         - all are ints that fall in respective ranges
-         - all are optional, one check a Dr might just track weight, and another they might only track HR and BP.
+         * VALIDATIONS:
+         * - medical record cannot be created without an associated appointment
+         * 
+         * Parent:
+         * - ID generated in DB → nothing to check
+         * - LocalDateTime is made by the constructor → nothing to check
+         * - notes can be empty or can hold basically anything, no validations for the
+         * parent class
+         * 
+         * Imaging:
+         * - Must provide an image
+         * 
+         * Vitals:
+         * - all are ints that fall in respective ranges
+         * - all are optional, one check a Dr might just track weight, and another they
+         * might only track HR and BP.
          */
         try {
 
@@ -134,24 +131,25 @@ public class MedicalRecordServices {
             }
 
             /*
-            else // rec is an instance of Imaging
-            {
-                //TODO in next Sprint:
-                // - accept only the valid types of images (png, jpeg, etc.)
-                // - convert image file to byte[] before passing it to the repository layer
-
-                // we decided to not do it this Sprint as the deliverable is only a command line based UI → this will only really make sense to implement once we have a GUI
-
-                // TODO when implementing - convert DTO to Imaging Entity
-                Imaging temp = (Imaging) medicalRecordMapper.toEntity(rec);
-                medicalRecordRepository.save(temp);
-
-            }
-            */
+             * else // rec is an instance of Imaging
+             * {
+             * //TODO in next Sprint:
+             * // - accept only the valid types of images (png, jpeg, etc.)
+             * // - convert image file to byte[] before passing it to the repository layer
+             * 
+             * // we decided to not do it this Sprint as the deliverable is only a command
+             * line based UI → this will only really make sense to implement once we have a
+             * GUI
+             * 
+             * // TODO when implementing - convert DTO to Imaging Entity
+             * Imaging temp = (Imaging) medicalRecordMapper.toEntity(rec);
+             * medicalRecordRepository.save(temp);
+             * 
+             * }
+             */
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
 
     }
 }
