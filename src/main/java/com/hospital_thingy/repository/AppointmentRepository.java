@@ -3,6 +3,8 @@ package com.hospital_thingy.repository;
 import com.hospital_thingy.entity.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * Represents the data access layer through the use of spring boot's Jpa
  * and entity objects which essentially translates SQL queries into
@@ -19,4 +21,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
      * findAll(); → read and return ALL Medical Records (as List)
      * deleteById(id) → delete
      */
+    List<Appointment> findByDoctorId(Long doctorId);
+
 }
