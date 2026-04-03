@@ -29,9 +29,9 @@ public abstract class MedicalRecord {
 
     // This will be done in the constructor instead
     //
-    //public void setDateTime(LocalDateTime dateTime) {
-    //    this.dateTime = dateTime;
-    //}
+    // public void setDateTime(LocalDateTime dateTime) {
+    // this.dateTime = dateTime;
+    // }
 
     public MedicalRecord(String notes) {
         this.notes = notes;
@@ -50,6 +50,12 @@ public abstract class MedicalRecord {
         this.notes = notes;
     }
 
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
+
 }
-
-

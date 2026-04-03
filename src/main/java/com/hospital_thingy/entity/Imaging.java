@@ -4,17 +4,7 @@ import jakarta.persistence.Entity;
 
 @Entity
 public class Imaging extends MedicalRecord {
-    private String description;
     private byte[] image;
-
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public byte[] getImage() {
         return image;
@@ -24,13 +14,11 @@ public class Imaging extends MedicalRecord {
         this.image = image;
     }
 
-
-
     public Imaging() {
         super();
     }
 
-    public Imaging (String notes) {
+    public Imaging(String notes) {
         super(notes);
     }
 

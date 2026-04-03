@@ -11,10 +11,10 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ImagingMapper {
 
-    @Mapping(target = "appointmentIds", source = "appointments")
+    @Mapping(target = "appointmentId", source = "appointment")
     ImagingDTO toDto(Imaging imaging);
 
-    @Mapping(target = "appointments", ignore = true)
+    @Mapping(target = "appointment", ignore = true)
     Imaging toEntity(ImagingDTO imagingDTO);
 
     List<ImagingDTO> toDtoList(List<Imaging> imagingRecords);

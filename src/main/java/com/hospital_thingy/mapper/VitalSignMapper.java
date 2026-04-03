@@ -11,10 +11,10 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface VitalSignMapper {
 
-    @Mapping(target = "appointmentIds", source = "appointments")
+    @Mapping(target = "appointmentId", source = "appointment")
     VitalSignDTO toDto(VitalSign vitalSign);
 
-    @Mapping(target = "appointments", ignore = true)
+    @Mapping(target = "appointment", ignore = true)
     VitalSign toEntity(VitalSignDTO vitalSignDTO);
 
     List<VitalSignDTO> toDtoList(List<VitalSign> vitalSigns);
