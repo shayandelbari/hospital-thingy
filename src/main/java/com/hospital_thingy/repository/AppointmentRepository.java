@@ -15,7 +15,8 @@ import java.util.List;
  * @since 2026-04-02
  */
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    /* InBuilt CRUD Fns:
+    /*
+     * InBuilt CRUD Fns:
      * save(MedicalRecord); → create
      * findById(id); → read and return one Medical Record
      * findAll(); → read and return ALL Medical Records (as List)

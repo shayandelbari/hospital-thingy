@@ -60,7 +60,7 @@ class PatientServicesTest {
         when(patientMapper.toDto(patientOne)).thenReturn(dtoOne);
         when(patientMapper.toDto(patientTwo)).thenReturn(dtoTwo);
 
-        List<PatientDTO> result = patientServices.GetAllPatients();
+        List<PatientDTO> result = patientServices.getAllPatients();
 
         assertEquals(List.of(dtoOne, dtoTwo), result);
         verify(patientRepository).findAll();
@@ -79,7 +79,7 @@ class PatientServicesTest {
         when(patientRepository.getPatientAppointments(patientId)).thenReturn(appointments);
         when(appointmentMapper.toDto(appointment)).thenReturn(appointmentDTO);
 
-        List<AppointmentDTO> result = patientServices.GetPatientAppointments(patientId);
+        List<AppointmentDTO> result = patientServices.getPatientAppointments(patientId);
 
         assertEquals(List.of(appointmentDTO), result);
         verify(patientRepository).findById(patientId);
@@ -93,7 +93,7 @@ class PatientServicesTest {
 
         when(patientRepository.findById(patientId)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> patientServices.GetPatientAppointments(patientId));
+        assertThrows(EntityNotFoundException.class, () -> patientServices.getPatientAppointments(patientId));
 
         verify(patientRepository).findById(patientId);
         verify(patientRepository, never()).getPatientAppointments(any());
@@ -112,7 +112,7 @@ class PatientServicesTest {
         when(patientRepository.getPatientMedicalRecords(patientId)).thenReturn(medicalRecords);
         when(medicalRecordMapper.toDto(medicalRecord)).thenReturn(medicalRecordDTO);
 
-        List<MedicalRecordDTO> result = patientServices.GetPatientMedicalRecord(patientId);
+        List<MedicalRecordDTO> result = patientServices.getPatientMedicalRecord(patientId);
 
         assertEquals(List.of(medicalRecordDTO), result);
         verify(patientRepository).findById(patientId);
@@ -130,7 +130,7 @@ class PatientServicesTest {
         when(patientMapper.toEntity(request)).thenReturn(entity);
         when(patientRepository.save(entity)).thenReturn(entity);
 
-        PatientDTO result = patientServices.CreatePatient(request);
+        PatientDTO result = patientServices.createPatient(request);
 
         assertSame(request, result);
         verify(patientRepository).save(entity);
@@ -148,7 +148,7 @@ class PatientServicesTest {
         when(patientMapper.toDto(existingEntity)).thenReturn(existingDto);
         when(patientMapper.toEntity(existingDto)).thenReturn(existingEntity);
 
-        assertThrows(DuplicateFoundException.class, () -> patientServices.CreatePatient(request));
+        assertThrows(DuplicateFoundException.class, () -> patientServices.createPatient(request));
 
         verify(patientRepository, never()).save(any());
     }
@@ -165,7 +165,7 @@ class PatientServicesTest {
         when(patientRepository.findByInsuranceNumber(request.insuranceNumber)).thenReturn(Optional.of(existingEntity));
         when(patientMapper.toDto(existingEntity)).thenReturn(existingDto);
 
-        PatientDTO result = patientServices.DeletePatient(request);
+        PatientDTO result = patientServices.deletePatient(request);
 
         assertSame(request, result);
         verify(patientRepository).deleteById(7L);
@@ -178,7 +178,7 @@ class PatientServicesTest {
 
         when(patientRepository.findByInsuranceNumber(request.insuranceNumber)).thenReturn(Optional.empty());
 
-        assertThrows(DeletionFailedException.class, () -> patientServices.DeletePatient(request));
+        assertThrows(DeletionFailedException.class, () -> patientServices.deletePatient(request));
 
         verify(patientRepository, never()).deleteById(any());
     }

@@ -1,6 +1,5 @@
 package com.hospital_thingy.repository;
 
-import com.hospital_thingy.entity.Appointment;
 import com.hospital_thingy.entity.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 

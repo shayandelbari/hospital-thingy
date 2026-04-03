@@ -10,13 +10,14 @@ public class PatientDTO {
     public LocalDate dateOfBirth;
     public Long phoneNumber;
     public String insuranceNumber;
+    public Boolean status;
     public List<Long> appointmentIds;
 
     public PatientDTO() {
     }
 
     public PatientDTO(Long id, String firstName, String lastName, LocalDate dateOfBirth,
-                      Long phoneNumber, String insuranceNumber, List<Long> appointmentIds) {
+            Long phoneNumber, String insuranceNumber, List<Long> appointmentIds) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

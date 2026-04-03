@@ -24,97 +24,88 @@ public class PatientServices {
     private final AppointmentMapper appointmentMapper;
     private final MedicalRecordMapper medicalRecordMapper;
 
-    public PatientServices(PatientRepository patientRepository, PatientMapper patientMapper, AppointmentMapper appointmentMapper, MedicalRecordMapper medicalRecordMapper) {
+    public PatientServices(PatientRepository patientRepository, PatientMapper patientMapper,
+            AppointmentMapper appointmentMapper, MedicalRecordMapper medicalRecordMapper) {
         this.patientRepository = patientRepository;
         this.patientMapper = patientMapper;
         this.appointmentMapper = appointmentMapper;
         this.medicalRecordMapper = medicalRecordMapper;
     }
 
-    //SELECT everything
-    public List<PatientDTO> GetAllPatients() {
+    // SELECT everything
+    public List<PatientDTO> getAllPatients() {
         return patientRepository.findAll().stream().map(patientMapper::toDto).toList();
     }
 
-    //SELECT patients appointment by patient id
-    public List<AppointmentDTO> GetPatientAppointments(Long id){
-        if(patientRepository.findById(id).isEmpty()){
-            throw new EntityNotFoundException("Patient with id "+id+" doesn't exist.");
-        }
-        else{
+    // SELECT patients appointment by patient id
+    public List<AppointmentDTO> getPatientAppointments(Long id) {
+        if (patientRepository.findById(id).isEmpty()) {
+            throw new EntityNotFoundException("Patient with id " + id + " doesn't exist.");
+        } else {
             return patientRepository.getPatientAppointments(id).stream().map(appointmentMapper::toDto).toList();
         }
     }
 
-    //SELECT patients medical records by patient id
-    public List<MedicalRecordDTO> GetPatientMedicalRecord(Long id){
-        if(patientRepository.findById(id).isEmpty()){
-            throw new EntityNotFoundException("Patient with id "+id+" doesn't exist.");
-        }
-        else{
-        return patientRepository.getPatientMedicalRecords(id).stream().map(medicalRecordMapper::toDto).toList();
+    // SELECT patients medical records by patient id
+    public List<MedicalRecordDTO> getPatientMedicalRecord(Long id) {
+        if (patientRepository.findById(id).isEmpty()) {
+            throw new EntityNotFoundException("Patient with id " + id + " doesn't exist.");
+        } else {
+            return patientRepository.getPatientMedicalRecords(id).stream().map(medicalRecordMapper::toDto).toList();
         }
     }
 
-    //ADD
-    //returns a value for later handling in view. Like showing created patient
-    public PatientDTO CreatePatient(PatientDTO patient){
-       try{
-           var pExists = patientMapper.toEntity(patientExists(patient));
-           if (pExists.getStatus()){
-               throw new DuplicateFoundException("Patient already exists and it's active");
-           }
-           pExists.setStatus(true);
-           var updatedP = patientRepository.save(pExists);
-           return patientMapper.toDto(updatedP);
-       }catch(EntityNotFoundException e){
-           patientRepository.save(patientMapper.toEntity(patient));
-           return patient;
-       }
+    // ADD
+    // returns a value for later handling in view. Like showing created patient
+    public PatientDTO createPatient(PatientDTO patient) {
+        try {
+            var pExists = patientMapper.toEntity(patientExists(patient));
+            if (pExists.getStatus()) {
+                throw new DuplicateFoundException("Patient already exists and it's active");
+            }
+            pExists.setStatus(true);
+            var updatedP = patientRepository.save(pExists);
+            return patientMapper.toDto(updatedP);
+        } catch (EntityNotFoundException e) {
+            patientRepository.save(patientMapper.toEntity(patient));
+            return patient;
+        }
     }
 
     @Transactional
-    public PatientDTO DeletePatient(PatientDTO patient){
-       try {
-           var pExists = patientExists(patient);
-           patientRepository.deleteById(pExists.id);
-           return patient;
+    public PatientDTO deletePatient(PatientDTO patient) {
+        try {
+            var pExists = patientExists(patient);
+            patientRepository.deleteById(pExists.id);
+            return patient;
 
-       }catch(EntityNotFoundException e) {
-           throw new DeletionFailedException("Patient doesn't exist.");
-       }
+        } catch (EntityNotFoundException e) {
+            throw new DeletionFailedException("Patient doesn't exist.");
+        }
     }
 
     @Transactional
-    public PatientDTO updatePatient(PatientDTO patient){
-      try{
-          var existingP = patientExists(patient);
-          var patientToUpdate = patientMapper.toEntity(existingP);
-          patientToUpdate.setFirstName(patient.firstName);
-          patientToUpdate.setLastName(patient.lastName);
-          patientToUpdate.setPhoneNumber(patient.phoneNumber);
-          return patientMapper.toDto(patientToUpdate);
-      }catch(EntityNotFoundException e){
-          throw new EntityUpdateException("Patient to be updated doesn't exist");
-      }
+    public PatientDTO updatePatient(PatientDTO patient) {
+        try {
+            var existingP = patientExists(patient);
+            var patientToUpdate = patientMapper.toEntity(existingP);
+            patientToUpdate.setFirstName(patient.firstName);
+            patientToUpdate.setLastName(patient.lastName);
+            patientToUpdate.setPhoneNumber(patient.phoneNumber);
+            return patientMapper.toDto(patientToUpdate);
+        } catch (EntityNotFoundException e) {
+            throw new EntityUpdateException("Patient to be updated doesn't exist");
+        }
     }
 
-
-    //function for reusability
-    public PatientDTO patientExists(PatientDTO patient){
+    // function for reusability
+    public PatientDTO patientExists(PatientDTO patient) {
         var existingPatient = patientRepository.findByInsuranceNumber(patient.insuranceNumber);
-        if (existingPatient.isPresent()){
+        if (existingPatient.isPresent()) {
             return patientMapper.toDto(existingPatient.get());
-        }
-        else{
+        } else {
             throw new EntityNotFoundException("Patient doesn't exist in the current data");
         }
     }
-
-
-
-
-
-
 
 }
