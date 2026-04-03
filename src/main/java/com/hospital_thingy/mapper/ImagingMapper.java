@@ -1,6 +1,7 @@
 package com.hospital_thingy.mapper;
 
 import com.hospital_thingy.DTO.ImagingDTO;
+import com.hospital_thingy.entity.Appointment;
 import com.hospital_thingy.entity.Imaging;
 import org.mapstruct.Mapper;
 
@@ -16,4 +17,8 @@ public interface ImagingMapper {
     List<ImagingDTO> toDtoList(List<Imaging> imagingRecords);
 
     List<Imaging> toEntityList(List<ImagingDTO> imagingDTOs);
+
+    default Long map(Appointment appointment) {
+        return appointment == null ? null : appointment.getId();
+    }
 }

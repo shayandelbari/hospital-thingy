@@ -1,6 +1,7 @@
 package com.hospital_thingy.mapper;
 
 import com.hospital_thingy.DTO.VitalSignDTO;
+import com.hospital_thingy.entity.Appointment;
 import com.hospital_thingy.entity.VitalSign;
 import org.mapstruct.Mapper;
 
@@ -16,4 +17,8 @@ public interface VitalSignMapper {
     List<VitalSignDTO> toDtoList(List<VitalSign> vitalSigns);
 
     List<VitalSign> toEntityList(List<VitalSignDTO> vitalSignDTOs);
+
+    default Long map(Appointment appointment) {
+        return appointment == null ? null : appointment.getId();
+    }
 }

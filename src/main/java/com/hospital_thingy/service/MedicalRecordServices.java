@@ -59,6 +59,7 @@ public class MedicalRecordServices {
 
         /*
         VALIDATIONS:
+        - medical record cannot be created un
 
         Parent:
          - ID generated in DB → nothing to check
