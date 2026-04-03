@@ -1,12 +1,15 @@
 package com.hospital_thingy.service;
 
+import com.hospital_thingy.DTO.AppointmentDTO;
 import com.hospital_thingy.DTO.MedicalRecordDTO;
 import com.hospital_thingy.DTO.VitalSignDTO;
 import com.hospital_thingy.entity.Appointment;
 import com.hospital_thingy.entity.MedicalRecord;
 import com.hospital_thingy.entity.VitalSign;
 import com.hospital_thingy.exception.EntityCreationException;
+import com.hospital_thingy.mapper.AppointmentMapper;
 import com.hospital_thingy.mapper.MedicalRecordMapper;
+import com.hospital_thingy.repository.AppointmentRepository;
 import com.hospital_thingy.repository.MedicalRecordRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +23,13 @@ import java.util.stream.Stream;
 public class MedicalRecordServices {
     private final MedicalRecordRepository medicalRecordRepository;
     private final MedicalRecordMapper medicalRecordMapper;
+    private final AppointmentRepository appointmentRepository;
 
 
-    public MedicalRecordServices(MedicalRecordRepository medicalRecordRepository, MedicalRecordMapper medicalRecordMapper) {
+    public MedicalRecordServices(MedicalRecordRepository medicalRecordRepository, MedicalRecordMapper medicalRecordMapper, AppointmentRepository appointmentRepository) {
         this.medicalRecordRepository = medicalRecordRepository;
         this.medicalRecordMapper = medicalRecordMapper;
+        this.appointmentRepository = appointmentRepository;
     }
 
     // Example: medical-record service can use a concrete mapper such as
@@ -55,11 +60,11 @@ public class MedicalRecordServices {
     }
 
 
-    public void CreateMedicalRecord (MedicalRecordDTO rec) {
+    public void createMedicalRecord (MedicalRecordDTO rec) {
 
         /*
         VALIDATIONS:
-        - medical record cannot be created un
+        - medical record cannot be created without an associated appointment
 
         Parent:
          - ID generated in DB → nothing to check
@@ -73,70 +78,79 @@ public class MedicalRecordServices {
          - all are ints that fall in respective ranges
          - all are optional, one check a Dr might just track weight, and another they might only track HR and BP.
          */
-        if (rec instanceof VitalSignDTO) {
+        try {
 
-            if (((VitalSignDTO) rec).getWeight() != null &
-                    ((VitalSignDTO) rec).getWeight() < 0 |
-                    ((VitalSignDTO) rec).getWeight() > 2000) {
-                throw new EntityCreationException("Patient's weight must be between 0 and 1000 kg");
+            Optional<Appointment> appt = appointmentRepository.findById(rec.getAppointmentId());
+            if (appt.isEmpty()) {
+                throw new EntityCreationException("Medical records MUST be connected to an Appointment");
             }
 
-            if (((VitalSignDTO) rec).getHeartRate() != null &
-                    ((VitalSignDTO) rec).getHeartRate() < 0 |
-                    ((VitalSignDTO) rec).getHeartRate() > 300) {
-                throw new EntityCreationException("Patient's heart rate must be between 0 and 300 bmp");
+            if (rec instanceof VitalSignDTO) {
+
+                if (((VitalSignDTO) rec).getWeight() != null &
+                        ((VitalSignDTO) rec).getWeight() < 0 |
+                        ((VitalSignDTO) rec).getWeight() > 2000) {
+                    throw new EntityCreationException("Patient's weight must be between 0 and 1000 kg");
+                }
+
+                if (((VitalSignDTO) rec).getHeartRate() != null &
+                        ((VitalSignDTO) rec).getHeartRate() < 0 |
+                        ((VitalSignDTO) rec).getHeartRate() > 300) {
+                    throw new EntityCreationException("Patient's heart rate must be between 0 and 300 bmp");
+                }
+
+                if (((VitalSignDTO) rec).getSystolicBP() != null &
+                        ((VitalSignDTO) rec).getSystolicBP() < 0 |
+                        ((VitalSignDTO) rec).getSystolicBP() > 400) {
+                    throw new EntityCreationException("Patient's systolic BP must be between 0 and 400 mmHg");
+                }
+
+                if (((VitalSignDTO) rec).getDiastolicBP() != null &
+                        ((VitalSignDTO) rec).getDiastolicBP() < 0 |
+                        ((VitalSignDTO) rec).getDiastolicBP() > 400) {
+                    throw new EntityCreationException("Patient's diastolic BP must be between 0 and 400 mmHg");
+                }
+
+                if (((VitalSignDTO) rec).getSystolicBP() != null &
+                        ((VitalSignDTO) rec).getDiastolicBP() != null &
+                        (((VitalSignDTO) rec).getDiastolicBP() > ((VitalSignDTO) rec).getSystolicBP())) {
+                    throw new EntityCreationException("Patient's diastolic BP cannot be larger than their systolic BP");
+                }
+
+                if (((VitalSignDTO) rec).getTemperature() != null &
+                        ((VitalSignDTO) rec).getTemperature() < 10 |
+                        ((VitalSignDTO) rec).getTemperature() > 50) {
+                    throw new EntityCreationException("Patient's temperature must be between 10 and 50 °C");
+                }
+
+                if (((VitalSignDTO) rec).getO2Saturation() != null &
+                        ((VitalSignDTO) rec).getO2Saturation() < 0 |
+                        ((VitalSignDTO) rec).getO2Saturation() > 100) {
+                    throw new EntityCreationException("Patient's oxygen saturation must be between 0 and 100 %");
+                }
+
+                VitalSign temp = (VitalSign) medicalRecordMapper.toEntity(rec);
+                medicalRecordRepository.save(temp);
             }
 
-            if (((VitalSignDTO) rec).getSystolicBP() != null &
-                    ((VitalSignDTO) rec).getSystolicBP() < 0 |
-                    ((VitalSignDTO) rec).getSystolicBP() > 400) {
-                throw new EntityCreationException("Patient's systolic BP must be between 0 and 400 mmHg");
-            }
+            /*
+            else // rec is an instance of Imaging
+            {
+                //TODO in next Sprint:
+                // - accept only the valid types of images (png, jpeg, etc.)
+                // - convert image file to byte[] before passing it to the repository layer
 
-            if (((VitalSignDTO) rec).getDiastolicBP() != null &
-                    ((VitalSignDTO) rec).getDiastolicBP() < 0 |
-                    ((VitalSignDTO) rec).getDiastolicBP() > 400) {
-                throw new EntityCreationException("Patient's diastolic BP must be between 0 and 400 mmHg");
-            }
+                // we decided to not do it this Sprint as the deliverable is only a command line based UI → this will only really make sense to implement once we have a GUI
 
-            if (((VitalSignDTO) rec).getSystolicBP() != null &
-                    ((VitalSignDTO) rec).getDiastolicBP() != null &
-                    (((VitalSignDTO) rec).getDiastolicBP() > ((VitalSignDTO) rec).getSystolicBP())) {
-                throw new EntityCreationException("Patient's diastolic BP cannot be larger than their systolic BP");
-            }
+                // TODO when implementing - convert DTO to Imaging Entity
+                Imaging temp = (Imaging) medicalRecordMapper.toEntity(rec);
+                medicalRecordRepository.save(temp);
 
-            if (((VitalSignDTO) rec).getTemperature() != null &
-                    ((VitalSignDTO) rec).getTemperature() < 10 |
-                    ((VitalSignDTO) rec).getTemperature() > 50) {
-                throw new EntityCreationException("Patient's temperature must be between 10 and 50 °C");
             }
-
-            if (((VitalSignDTO) rec).getO2Saturation() != null &
-                    ((VitalSignDTO) rec).getO2Saturation() < 0 |
-                    ((VitalSignDTO) rec).getO2Saturation() > 100) {
-                throw new EntityCreationException("Patient's oxygen saturation must be between 0 and 100 %");
-            }
-
-            VitalSign temp = (VitalSign) medicalRecordMapper.toEntity(rec);
-            medicalRecordRepository.save(temp);
+            */
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        /*
-        else // rec is an instance of Imaging
-        {
-            //TODO in next Sprint:
-            // - accept only the valid types of images (png, jpeg, etc.)
-            // - convert image file to byte[] before passing it to the repository layer
-
-            // we decided to not do it this Sprint as the deliverable is only a command line based UI → this will only really make sense to implement once we have a GUI
-
-            // TODO when implementing - convert DTO to Imaging Entity
-            Imaging temp = (Imaging) medicalRecordMapper.toEntity(rec);
-            medicalRecordRepository.save(temp);
-
-        }
-        */
-
 
 
     }
