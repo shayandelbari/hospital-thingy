@@ -1,16 +1,18 @@
 package com.hospital_thingy.service;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
 import com.hospital_thingy.DTO.AppointmentDTO;
 import com.hospital_thingy.entity.Appointment;
-import com.hospital_thingy.exception.EntityCreationException;
 import com.hospital_thingy.exception.DeletionFailedException;
+import com.hospital_thingy.exception.EntityCreationException;
 import com.hospital_thingy.exception.EntityNotFoundException;
 import com.hospital_thingy.exception.EntityUpdateException;
 import com.hospital_thingy.mapper.AppointmentMapper;
 import com.hospital_thingy.repository.AppointmentRepository;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Represents the business logic layer (BLL) of the appointments.
@@ -22,6 +24,7 @@ import java.util.Optional;
  * @version 1.0
  * @since 2026-04-02
  */
+@Service
 public class AppointmentServices {
     final private AppointmentRepository apptRepo;
     final private AppointmentMapper apptMapper;
