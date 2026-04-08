@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "spring.seeder.enabled",
+      "type": "java.lang.String",
+      "description": "a flag to enable or disable the seeding of the database with initial data"
+    }
+  ]
+}
