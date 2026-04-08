@@ -1,9 +1,19 @@
 package com.hospital_thingy.entity;
 
-import jakarta.persistence.*;
-
 import java.util.Collection;
 import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 
 @Entity
 public class Doctor {
@@ -24,8 +34,7 @@ public class Doctor {
     @Enumerated(EnumType.STRING)
     private Collection<Speciality> specialities;
 
-    public enum Speciality
-    {
+    public enum Speciality {
         CARDIOLOGY,
         DERMATOLOGY,
         NEUROLOGY,
@@ -39,9 +48,19 @@ public class Doctor {
         OTORHINOLARYNGOLOGY
     }
 
-
     @OneToMany(mappedBy = "doctor")
     private List<Appointment> appointments;
+
+    public Doctor() {
+    }
+
+    public Doctor(String firstName, String lastName, String licenseNumber,
+            Collection<Speciality> specialities) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.licenseNumber = licenseNumber;
+        this.specialities = specialities;
+    }
 
     public Long getId() {
         return id;
@@ -82,6 +101,18 @@ public class Doctor {
     public List<Appointment> getAppointments() {
         return appointments;
     }
+
+    @PrePersist
+    @PreUpdate
+    private void validateState() {
+        if (firstName == null || firstName.isBlank()) {
+            throw new IllegalStateException("Doctor firstName is required");
+        }
+        if (lastName == null || lastName.isBlank()) {
+            throw new IllegalStateException("Doctor lastName is required");
+        }
+        if (licenseNumber == null || licenseNumber.isBlank()) {
+            throw new IllegalStateException("Doctor licenseNumber is required");
+        }
+    }
 }
-
-

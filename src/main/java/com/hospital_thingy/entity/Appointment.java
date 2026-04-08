@@ -1,10 +1,22 @@
 package com.hospital_thingy.entity;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 
 @Entity
 public class Appointment {
@@ -29,10 +41,10 @@ public class Appointment {
         UPCOMING,
         IN_PROGRESS,
         COMPLETED,
-        POSTPONED, // if we decided not to update appointments and create another one as part of the "update"
+        POSTPONED, // if we decided not to update appointments and create another one as part of
+                   // the "update"
         CANCELLED
     }
-
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "patient_id", nullable = false)
@@ -44,6 +56,18 @@ public class Appointment {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<MedicalRecord> medicalRecords;
+
+    public Appointment() {
+    }
+
+    public Appointment(LocalDate date, LocalTime startTime, LocalTime endTime,
+            Status status, String reasonForVisit) {
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.status = status;
+        this.reasonForVisit = reasonForVisit;
+    }
 
     public Long getId() {
         return id;
@@ -108,5 +132,27 @@ public class Appointment {
     public List<MedicalRecord> getMedicalRecords() {
         return medicalRecords;
     }
-}
 
+    @PrePersist
+    @PreUpdate
+    private void validateState() {
+        if (date == null) {
+            throw new IllegalStateException("Appointment date is required");
+        }
+        if (startTime == null) {
+            throw new IllegalStateException("Appointment startTime is required");
+        }
+        if (endTime == null) {
+            throw new IllegalStateException("Appointment endTime is required");
+        }
+        if (!endTime.isAfter(startTime)) {
+            throw new IllegalStateException("Appointment endTime must be after startTime");
+        }
+        if (patient == null) {
+            throw new IllegalStateException("Appointment patient is required");
+        }
+        if (doctor == null) {
+            throw new IllegalStateException("Appointment doctor is required");
+        }
+    }
+}
