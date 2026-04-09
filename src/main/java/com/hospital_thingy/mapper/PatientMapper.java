@@ -15,6 +15,8 @@ public interface PatientMapper {
     PatientDTO toDto(Patient patient);
 
     @Mapping(target = "appointments", ignore = true)
+    //Needed for correct mapping
+    @Mapping(target = "status", source = "status")
     Patient toEntity(PatientDTO patientDTO);
 
     List<PatientDTO> toDtoList(List<Patient> patients);

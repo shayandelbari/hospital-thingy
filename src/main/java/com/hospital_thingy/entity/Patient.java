@@ -54,6 +54,18 @@ public class Patient {
         this.status = true;
     }
 
+    //to be able to update
+    public Patient(Long id, String firstName, String lastName, LocalDate dateOfBirth,
+                   Long phoneNumber, String insuranceNumber) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.phoneNumber = phoneNumber;
+        this.insuranceNumber = insuranceNumber;
+        this.status = true;
+    }
+
     public Long getId() {
         return id;
     }
