@@ -2,8 +2,13 @@ package com.hospital_thingy.repository;
 
 import com.hospital_thingy.entity.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents the data access layer through the use of spring boot's Jpa
@@ -23,5 +28,25 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
      * deleteById(id) → delete
      */
     List<Appointment> findByDoctorId(Long doctorId);
+
+    List<Appointment> findByDoctorIdAndDate(Long doctorId, LocalDate date);
+
+    @Query("""
+            SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END
+            FROM Appointment a
+            WHERE a.doctor.id = :doctorId
+              AND a.date = :date
+              AND a.status IN :blockedStatuses
+              AND (:excludeAppointmentId IS NULL OR a.id <> :excludeAppointmentId)
+              AND a.startTime < :requestedEnd
+              AND a.endTime > :requestedStart
+            """)
+    boolean existsDoctorDoubleBooking(
+            @Param("doctorId") Long doctorId,
+            @Param("date") LocalDate date,
+            @Param("requestedStart") LocalTime requestedStart,
+            @Param("requestedEnd") LocalTime requestedEnd,
+            @Param("excludeAppointmentId") Long excludeAppointmentId,
+            @Param("blockedStatuses") Set<Appointment.Status> blockedStatuses);
 
 }
