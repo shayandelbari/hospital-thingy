@@ -2,6 +2,8 @@ package com.hospital_thingy.controller;
 
 import com.hospital_thingy.exception.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,7 +14,7 @@ public class GlobalExceptionHandler {
     //This cleans the code by avoiding having a try-catch clause in every single service implementation in case
     //errors are thrown when using the restAPIs.
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException.class)
     public String handleEntityNotFound(EntityNotFoundException ex){
         return ex.getMessage();
@@ -42,11 +44,32 @@ public class GlobalExceptionHandler {
         return ex.getMessage();
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public String Exception(DeletionFailedException ex){
+    public String Exception(Exception ex){
         return ex.getMessage();
     }
+
+
+    //Both function take care of 400 exceptions that are thrown
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public String Exc(MethodArgumentNotValidException ex){
+        return ex.getMessage();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public String Exc(HttpMessageNotReadableException ex){
+        return ex.getMessage();
+    }
+
+
+
+
+
+
+
 
 
 

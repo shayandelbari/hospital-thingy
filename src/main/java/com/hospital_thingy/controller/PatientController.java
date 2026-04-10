@@ -2,6 +2,7 @@ package com.hospital_thingy.controller;
 
 import java.util.List;
 
+import com.hospital_thingy.exception.EntityCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public class PatientController {
                 .toList();
     }
 
-    @GetMapping("/{patientId}/getPatient")
+    @GetMapping("/{patientId}")
     public PatientDTO getPatientById(@PathVariable Long patientId){
         return patientService.FindPatientById(patientId);
     }
@@ -51,21 +52,34 @@ public class PatientController {
         return patientService.getPatientMedicalRecord(patientId);
     }
 
-    //DOESNT WORK
-    @PostMapping("/createPatient")
+    @PostMapping
     public PatientDTO createPatient(@RequestBody PatientDTO patient)
     {return patientService.createPatient(patient);}
 
-    @DeleteMapping("/{patientId}/delete")
+    @DeleteMapping("/{patientId}")
     public PatientDTO deletePatient(@PathVariable Long patientId)
-    {return patientService.deletePatient(patientId);}
+    {
+        return patientService.deletePatient(patientId);
+    }
 
-    @PutMapping("/{patientId}/update")
+    @PutMapping("/{patientId}")
     public PatientDTO updatePatient(@PathVariable Long patientId, @RequestBody PatientDTO p)
-    {return patientService.updatePatient(patientId, p);}
+    {
+        if (!checkInput(p)){
+            throw new EntityCreationException("First and/or last name arguments are not in the correct format.");
+        }
+        return patientService.updatePatient(patientId, p);
+    }
 
-    @PutMapping("/{patientId}/{status}/updateStatus")
+    @PutMapping("/{patientId}/{status}")
     public PatientDTO updatePatientStatus(@PathVariable Long patientId, @PathVariable Boolean status)
     {return patientService.updatePatientStatus(patientId, status);}
+
+    //Make sure that name and last name are in correct format (all other input
+    //is checked by json to entity conversion like inserting string for phone number)
+    public boolean checkInput(PatientDTO p){
+        return p.firstName.matches("^[A-Za-z]+([ '-][A-Za-z]+)*$")
+                && p.lastName.matches("^[A-Za-z]+([ '-][A-Za-z]+)*$");
+    }
 
 }
