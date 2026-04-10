@@ -100,54 +100,55 @@ public class MedicalRecordServices {
 
             Optional<Appointment> appt = appointmentRepository.findById(rec.getAppointmentId());
             if (appt.isEmpty()) {
-                throw new EntityCreationException("Medical records MUST be connected to an Appointment");
+                throw new EntityCreationException("Medical records MUST be connected to an existing Appointment");
             }
 
             if (rec instanceof VitalSignDTO) {
 
-                if (((VitalSignDTO) rec).getWeight() != null &
-                        ((VitalSignDTO) rec).getWeight() < 0 |
-                        ((VitalSignDTO) rec).getWeight() > 2000) {
-                    throw new EntityCreationException("Patient's weight must be between 0 and 1000 kg");
+                if (((VitalSignDTO) rec).getWeight() != null &&
+                        (((VitalSignDTO) rec).getWeight() < 0 ||
+                        ((VitalSignDTO) rec).getWeight() > 2000)) {
+                    throw new EntityCreationException("Patient's weight must be between 0 and 2000 kg");
                 }
 
-                if (((VitalSignDTO) rec).getHeartRate() != null &
-                        ((VitalSignDTO) rec).getHeartRate() < 0 |
-                        ((VitalSignDTO) rec).getHeartRate() > 300) {
+                if (((VitalSignDTO) rec).getHeartRate() != null &&
+                        (((VitalSignDTO) rec).getHeartRate() < 0 ||
+                        ((VitalSignDTO) rec).getHeartRate() > 300)) {
                     throw new EntityCreationException("Patient's heart rate must be between 0 and 300 bmp");
                 }
 
-                if (((VitalSignDTO) rec).getSystolicBP() != null &
-                        ((VitalSignDTO) rec).getSystolicBP() < 0 |
-                        ((VitalSignDTO) rec).getSystolicBP() > 400) {
+                if (((VitalSignDTO) rec).getSystolicBP() != null &&
+                        (((VitalSignDTO) rec).getSystolicBP() < 0 ||
+                        ((VitalSignDTO) rec).getSystolicBP() > 400)) {
                     throw new EntityCreationException("Patient's systolic BP must be between 0 and 400 mmHg");
                 }
 
-                if (((VitalSignDTO) rec).getDiastolicBP() != null &
-                        ((VitalSignDTO) rec).getDiastolicBP() < 0 |
-                        ((VitalSignDTO) rec).getDiastolicBP() > 400) {
+                if (((VitalSignDTO) rec).getDiastolicBP() != null &&
+                        (((VitalSignDTO) rec).getDiastolicBP() < 0 ||
+                        ((VitalSignDTO) rec).getDiastolicBP() > 400)) {
                     throw new EntityCreationException("Patient's diastolic BP must be between 0 and 400 mmHg");
                 }
 
-                if (((VitalSignDTO) rec).getSystolicBP() != null &
-                        ((VitalSignDTO) rec).getDiastolicBP() != null &
+                if (((VitalSignDTO) rec).getSystolicBP() != null &&
+                        ((VitalSignDTO) rec).getDiastolicBP() != null &&
                         (((VitalSignDTO) rec).getDiastolicBP() > ((VitalSignDTO) rec).getSystolicBP())) {
                     throw new EntityCreationException("Patient's diastolic BP cannot be larger than their systolic BP");
                 }
 
-                if (((VitalSignDTO) rec).getTemperature() != null &
-                        ((VitalSignDTO) rec).getTemperature() < 10 |
-                        ((VitalSignDTO) rec).getTemperature() > 50) {
+                if (((VitalSignDTO) rec).getTemperature() != null &&
+                        (((VitalSignDTO) rec).getTemperature() < 10 ||
+                        ((VitalSignDTO) rec).getTemperature() > 50)) {
                     throw new EntityCreationException("Patient's temperature must be between 10 and 50 °C");
                 }
 
-                if (((VitalSignDTO) rec).getO2Saturation() != null &
-                        ((VitalSignDTO) rec).getO2Saturation() < 0 |
-                        ((VitalSignDTO) rec).getO2Saturation() > 100) {
+                if (((VitalSignDTO) rec).getO2Saturation() != null &&
+                        (((VitalSignDTO) rec).getO2Saturation() < 0 ||
+                        ((VitalSignDTO) rec).getO2Saturation() > 100)) {
                     throw new EntityCreationException("Patient's oxygen saturation must be between 0 and 100 %");
                 }
 
                 VitalSign temp = (VitalSign) medicalRecordMapper.toEntity(rec);
+                temp.setAppointment(appt.get());
                 medicalRecordRepository.save(temp);
             }
 
