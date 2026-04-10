@@ -21,15 +21,6 @@ public class MedicalRecordController {
         return medicalRecordService.getAllMedicalRecords();
     }
 
-    // Query parameter use case: filter records by appointment id.
-    // GET /api/medical-records/search?appointmentId=22
-    @GetMapping("/search")
-    public List<MedicalRecordDTO> getMedicalRecordsByAppointment(@RequestParam Long appointmentId) {
-        return medicalRecordService.getAllMedicalRecords().stream()
-                .filter(record -> record.getAppointmentId() != null && record.getAppointmentId().equals(appointmentId))
-                .toList();
-    }
-
     // Dynamic URL example: GET /api/medical-records/3
     @GetMapping("/{id}")
     public MedicalRecordDTO getMedicalRecordById(@PathVariable Long id) {
@@ -38,7 +29,7 @@ public class MedicalRecordController {
 
     @PostMapping
     public void addMedicalRecord(@RequestBody MedicalRecordDTO record) {
-       medicalRecordService.createMedicalRecord(record);
+        medicalRecordService.createMedicalRecord(record);
     }
 
 }

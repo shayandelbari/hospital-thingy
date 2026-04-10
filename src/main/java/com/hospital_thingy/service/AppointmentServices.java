@@ -1,5 +1,6 @@
 package com.hospital_thingy.service;
 
+import com.hospital_thingy.mapper.MedicalRecordMapper;
 import java.util.List;
 import java.util.Set;
 import java.time.LocalTime;
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 import org.springframework.stereotype.Service;
 
 import com.hospital_thingy.DTO.AppointmentDTO;
+import com.hospital_thingy.DTO.MedicalRecordDTO;
 import com.hospital_thingy.entity.Appointment;
 import com.hospital_thingy.entity.Doctor;
 import com.hospital_thingy.entity.Patient;
@@ -41,6 +43,7 @@ public class AppointmentServices {
     private final AppointmentMapper apptMapper;
     private final DoctorRepository doctorRepo;
     private final PatientRepository patientRepo;
+    private final MedicalRecordMapper medicalRecordMapper;
 
     /**
      * Constructs an AppointmentServices with the given repository.
@@ -49,11 +52,12 @@ public class AppointmentServices {
      * @param mapper the appointment mapper (DTO : Entity)
      */
     public AppointmentServices(AppointmentRepository repo, AppointmentMapper mapper,
-            DoctorRepository doctorRepo, PatientRepository patientRepo) {
+            DoctorRepository doctorRepo, PatientRepository patientRepo, MedicalRecordMapper medicalRecordMapper) {
         apptRepo = repo;
         apptMapper = mapper;
         this.doctorRepo = doctorRepo;
         this.patientRepo = patientRepo;
+        this.medicalRecordMapper = medicalRecordMapper;
     }
 
     /**
@@ -260,6 +264,18 @@ public class AppointmentServices {
     public List<AppointmentDTO> getDoctorAppointmentsByDate(Long doctorId, LocalDate date) {
         getRequiredDoctor(doctorId);
         return apptMapper.toDtoList(apptRepo.findByDoctorIdAndDate(doctorId, date));
+    }
+
+    /**
+     * Retrieves the medical records associated with a specific appointment.
+     * 
+     * @param appointmentId the ID of the appointment
+     * @return the list of medical records
+     * @throws EntityNotFoundException if the appointment is not found
+     */
+    public List<MedicalRecordDTO> getAppointmentMedicalRecords(Long appointmentId) {
+        getRequiredAppointment(appointmentId);
+        return medicalRecordMapper.toDtoList(apptRepo.findMedicalRecordsById(appointmentId));
     }
 
     private Appointment getRequiredAppointment(Long id) {

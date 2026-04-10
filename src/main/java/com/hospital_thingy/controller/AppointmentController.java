@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hospital_thingy.DTO.AppointmentDTO;
+import com.hospital_thingy.DTO.MedicalRecordDTO;
 import com.hospital_thingy.exception.EntityCreationException;
 import com.hospital_thingy.service.AppointmentServices;
 
@@ -86,6 +87,11 @@ public class AppointmentController {
     @PostMapping("/{id}/postpone")
     public AppointmentDTO postponeAppointment(@PathVariable Long id) {
         return appointmentService.postponeAppointment(id);
+    }
+
+    @GetMapping("/{id}/medical-records")
+    public List<MedicalRecordDTO> getMedicalRecords(@PathVariable Long id) {
+        return appointmentService.getAppointmentMedicalRecords(id);
     }
 
 }

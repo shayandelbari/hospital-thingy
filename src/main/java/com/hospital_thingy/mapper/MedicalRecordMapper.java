@@ -6,6 +6,9 @@ import com.hospital_thingy.DTO.VitalSignDTO;
 import com.hospital_thingy.entity.Imaging;
 import com.hospital_thingy.entity.MedicalRecord;
 import com.hospital_thingy.entity.VitalSign;
+
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -42,5 +45,13 @@ public class MedicalRecordMapper {
         }
 
         throw new IllegalArgumentException("Unknown type");
+    }
+
+    public List<MedicalRecordDTO> toDtoList(List<MedicalRecord> records) {
+        return records.stream().map(this::toDto).toList();
+    }
+
+    public List<MedicalRecord> toEntityList(List<MedicalRecordDTO> dtos) {
+        return dtos.stream().map(this::toEntity).toList();
     }
 }
