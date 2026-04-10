@@ -32,8 +32,8 @@ public class MedicalRecordController {
 
     // Dynamic URL example: GET /api/medical-records/3
     @GetMapping("/{id}")
-    public MedicalRecordDTO getMedicalRecordById(@RequestParam Long recordId) {
-        return medicalRecordService.getMedicalRecordById(recordId);
+    public MedicalRecordDTO getMedicalRecordById(@PathVariable Long id) {
+        return medicalRecordService.getMedicalRecordById(id);
     }
 
     @PostMapping
