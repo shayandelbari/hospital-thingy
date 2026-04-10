@@ -3,11 +3,9 @@ package com.hospital_thingy.controller;
 import java.util.List;
 
 import com.hospital_thingy.entity.Doctor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.hospital_thingy.exception.EntityCreationException;
+import com.hospital_thingy.exception.EntityUpdateException;
+import org.springframework.web.bind.annotation.*;
 
 import com.hospital_thingy.DTO.AppointmentDTO;
 import com.hospital_thingy.DTO.DoctorDTO;
@@ -36,9 +34,58 @@ public class DoctorController {
                 .toList();
     }
 
+    // get doctor by id
+    @GetMapping("/{id}")
+    public DoctorDTO getDoctorById(@PathVariable Long id)
+    {
+        return doctorService.getDoctorById(id);
+    }
+
+    //create doctor
+    @PostMapping
+    public DoctorDTO createDoctor(@RequestBody DoctorDTO doctorDTO)
+    {
+        validateDoctor(doctorDTO, false);
+        return doctorService.createDoctor(doctorDTO);
+    }
+
+    //update doctor
+    @PutMapping("/{id}")
+    public DoctorDTO updateDoctor(@PathVariable Long id, @RequestBody DoctorDTO doctorDTO)
+    {
+        validateDoctor(doctorDTO, true);
+        return doctorService.updateDoctor(id, doctorDTO);
+
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteDoctor(@PathVariable Long id)
+    {
+        doctorService.deleteDoctor(id);
+    }
+
     // Dynamic URL example: GET /api/doctors/10/appointments
     @GetMapping("/{doctorId}/appointments")
     public List<AppointmentDTO> getDoctorAppointmentsByPathVariable(@PathVariable Long doctorId) {
         return doctorService.getDoctorAppointments(doctorId);
+    }
+
+    //throws exception if name, last name and license are empty.
+    private void validateDoctor(DoctorDTO doctorDTO, boolean isUpdate) {
+        if (doctorDTO.firstName == null || doctorDTO.firstName.isBlank()
+                || doctorDTO.lastName == null || doctorDTO.lastName.isBlank()
+                || doctorDTO.licenseNumber == null || doctorDTO.licenseNumber.isBlank())
+        {
+            if(isUpdate)
+            {
+                throw new EntityUpdateException("First name, last name, and license number are required.");
+            }
+            else
+            {
+                throw new EntityCreationException("First name, last name, and license number are required.");
+            }
+
+
+        }
     }
 }

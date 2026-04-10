@@ -2,6 +2,7 @@ package com.hospital_thingy.service;
 
 import com.hospital_thingy.DTO.AppointmentDTO;
 import com.hospital_thingy.DTO.DoctorDTO;
+import com.hospital_thingy.entity.Doctor;
 import com.hospital_thingy.exception.DeletionFailedException;
 import com.hospital_thingy.exception.DuplicateFoundException;
 import com.hospital_thingy.exception.EntityNotFoundException;
@@ -56,44 +57,65 @@ public class DoctorServices {
     }
 
     @Transactional
-    public DoctorDTO deleteDoctor(DoctorDTO doctor) {
-        try {
-            var dExists = doctorExists(doctor);
-
-            if (!dExists.appointmentIds.isEmpty()) {
-                throw new DeletionFailedException("Doctor has appointments, cannot delete.");
+    public void deleteDoctor(Long id) {
+        var delDoctor = doctorRepository.findById(id);
+        if (delDoctor.isEmpty())
+        {
+            throw new DeletionFailedException("Doctor with id " + id + " does not exist.");
+        }
+        else
+        {
+            var doctor = delDoctor.get();
+            if (doctor.getAppointments() != null && !doctor.getAppointments().isEmpty())
+            {
+                throw new DeletionFailedException("Doctor with id " + id + " has an appointment in the records. Doctor can't be deleted.");
             }
 
-            doctorRepository.deleteById(dExists.id);
-            return dExists;
-        } catch (EntityNotFoundException e) {
-            throw new DeletionFailedException("Doctor doesn't exist.");
+            doctorRepository.deleteById(id);
         }
+
     }
 
     @Transactional
-    public DoctorDTO updateDoctor(DoctorDTO doctor) {
-        try {
-            var dExists = doctorExists(doctor);
-            dExists.firstName = doctor.firstName;
-            dExists.lastName = doctor.lastName;
-            dExists.specialities = doctor.specialities;
+    public DoctorDTO updateDoctor(Long id, DoctorDTO doctor)
+    {
+        Doctor existingDoctor = doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor with id " + id + " not found"));
 
-            var updatedDoctor = doctorRepository.save(doctorMapper.toEntity(dExists));
-            return doctorMapper.toDto(updatedDoctor);
-        } catch (EntityNotFoundException e) {
-            throw new EntityUpdateException("Doctor doesn't exist.");
-
+        // avoid duplicate license -- id stays, other properties change too, but license need to be changed to update
+        var doctorSameLic = doctorRepository.findByLicenseNumber(doctor.licenseNumber);
+        if (doctorSameLic.isPresent() && !doctorSameLic.get().getId().equals(id))
+        {
+            throw new DuplicateFoundException("Doctor with license " + doctor.licenseNumber + " already exists.");
         }
+
+        existingDoctor.setFirstName(doctor.firstName);
+        existingDoctor.setLastName(doctor.lastName);
+        existingDoctor.setLicenseNumber(doctor.licenseNumber);
+        existingDoctor.setSpecialities(doctor.specialities);
+
+        Doctor updatedDoctor = doctorRepository.save(existingDoctor);
+        return doctorMapper.toDto(updatedDoctor);
+    }
+
+    public DoctorDTO getDoctorById(Long id)
+    {
+        var doctor =  doctorRepository.findById(id);
+        if (doctor.isPresent())
+        {
+            return doctorMapper.toDto(doctor.get());
+        }
+        throw new EntityNotFoundException("Doctor with id " + id + " not found");
     }
 
     public DoctorDTO doctorExists(DoctorDTO doctor) {
-        var existingDoctor = doctorRepository.findByLicenseNumber(doctor.licenseNumber);
+        var existingDoctor = doctorRepository.findById(doctor.id);
         if (existingDoctor.isPresent()) {
             return doctorMapper.toDto(existingDoctor.get());
         } else {
             throw new EntityNotFoundException("Doctor doesn't exist in the current data");
         }
     }
+
+
 
 }
