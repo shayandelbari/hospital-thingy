@@ -6,7 +6,6 @@ import com.hospital_thingy.entity.Doctor;
 import com.hospital_thingy.exception.DeletionFailedException;
 import com.hospital_thingy.exception.DuplicateFoundException;
 import com.hospital_thingy.exception.EntityNotFoundException;
-import com.hospital_thingy.exception.EntityUpdateException;
 import com.hospital_thingy.mapper.AppointmentMapper;
 import com.hospital_thingy.mapper.DoctorMapper;
 import com.hospital_thingy.repository.AppointmentRepository;
@@ -59,16 +58,13 @@ public class DoctorServices {
     @Transactional
     public void deleteDoctor(Long id) {
         var delDoctor = doctorRepository.findById(id);
-        if (delDoctor.isEmpty())
-        {
+        if (delDoctor.isEmpty()) {
             throw new DeletionFailedException("Doctor with id " + id + " does not exist.");
-        }
-        else
-        {
+        } else {
             var doctor = delDoctor.get();
-            if (doctor.getAppointments() != null && !doctor.getAppointments().isEmpty())
-            {
-                throw new DeletionFailedException("Doctor with id " + id + " has an appointment in the records. Doctor can't be deleted.");
+            if (doctor.getAppointments() != null && !doctor.getAppointments().isEmpty()) {
+                throw new DeletionFailedException(
+                        "Doctor with id " + id + " has an appointment in the records. Doctor can't be deleted.");
             }
 
             doctorRepository.deleteById(id);
@@ -77,14 +73,14 @@ public class DoctorServices {
     }
 
     @Transactional
-    public DoctorDTO updateDoctor(Long id, DoctorDTO doctor)
-    {
-        Doctor existingDoctor = doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor with id " + id + " not found"));
+    public DoctorDTO updateDoctor(Long id, DoctorDTO doctor) {
+        Doctor existingDoctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Doctor with id " + id + " not found"));
 
-        // avoid duplicate license -- id stays, other properties change too, but license need to be changed to update
+        // avoid duplicate license -- id stays, other properties change too, but license
+        // need to be changed to update
         var doctorSameLic = doctorRepository.findByLicenseNumber(doctor.licenseNumber);
-        if (doctorSameLic.isPresent() && !doctorSameLic.get().getId().equals(id))
-        {
+        if (doctorSameLic.isPresent() && !doctorSameLic.get().getId().equals(id)) {
             throw new DuplicateFoundException("Doctor with license " + doctor.licenseNumber + " already exists.");
         }
 
@@ -97,11 +93,9 @@ public class DoctorServices {
         return doctorMapper.toDto(updatedDoctor);
     }
 
-    public DoctorDTO getDoctorById(Long id)
-    {
-        var doctor =  doctorRepository.findById(id);
-        if (doctor.isPresent())
-        {
+    public DoctorDTO getDoctorById(Long id) {
+        var doctor = doctorRepository.findById(id);
+        if (doctor.isPresent()) {
             return doctorMapper.toDto(doctor.get());
         }
         throw new EntityNotFoundException("Doctor with id " + id + " not found");
@@ -115,7 +109,5 @@ public class DoctorServices {
             throw new EntityNotFoundException("Doctor doesn't exist in the current data");
         }
     }
-
-
 
 }

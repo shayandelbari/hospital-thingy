@@ -11,7 +11,6 @@ import com.hospital_thingy.exception.EntityUpdateException;
 import com.hospital_thingy.mapper.AppointmentMapper;
 import com.hospital_thingy.mapper.MedicalRecordMapper;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hospital_thingy.mapper.PatientMapper;
@@ -21,9 +20,7 @@ import java.util.List;
 
 @Service
 public class PatientServices {
-    @Autowired
     private final PatientRepository patientRepository;
-
     private final PatientMapper patientMapper;
     private final AppointmentMapper appointmentMapper;
     private final MedicalRecordMapper medicalRecordMapper;
@@ -62,37 +59,34 @@ public class PatientServices {
     // ADD
     // returns a value for later handling in view. Like showing created patient
     public PatientDTO createPatient(PatientDTO patient) {
-            var pExists = patientRepository.findByInsuranceNumber(patient.insuranceNumber);
-            if (pExists.isPresent()) {
-                var pExistsEntity = pExists.get(); //because its Optional, I need to take the actual value
-                if(pExistsEntity.getStatus()){
-                    throw new DuplicateFoundException("Patient already exists and it's active");
-                }
-                //Inactive patient so its status is turned to true
-                pExistsEntity.setStatus(true);
-                return patientMapper.toDto(patientRepository.save(pExistsEntity));
+        var pExists = patientRepository.findByInsuranceNumber(patient.insuranceNumber);
+        if (pExists.isPresent()) {
+            var pExistsEntity = pExists.get(); // because its Optional, I need to take the actual value
+            if (pExistsEntity.getStatus()) {
+                throw new DuplicateFoundException("Patient already exists and it's active");
             }
-            else{
-                Patient newPatient = new Patient(patient.firstName, patient.lastName, patient.dateOfBirth,
-                        patient.phoneNumber, patient.insuranceNumber);
-                var addedPatient = patientRepository.save(newPatient);
-                return patientMapper.toDto(addedPatient);
-            }
+            // Inactive patient so its status is turned to true
+            pExistsEntity.setStatus(true);
+            return patientMapper.toDto(patientRepository.save(pExistsEntity));
+        } else {
+            Patient newPatient = new Patient(patient.firstName, patient.lastName, patient.dateOfBirth,
+                    patient.phoneNumber, patient.insuranceNumber);
+            var addedPatient = patientRepository.save(newPatient);
+            return patientMapper.toDto(addedPatient);
+        }
 
     }
 
     @Transactional
     public PatientDTO deletePatient(Long id) {
         var pExists = patientRepository.findById(id);
-        if(pExists.isEmpty()){
+        if (pExists.isEmpty()) {
             throw new DeletionFailedException("Patient to be deleted doesn't exist.");
-        }
-        else{
+        } else {
             var pExistsEntity = pExists.get();
-            if(pExistsEntity.getAppointments().isEmpty()){
+            if (pExistsEntity.getAppointments().isEmpty()) {
                 patientRepository.deleteById(id);
-            }
-            else{
+            } else {
                 pExistsEntity.setStatus(false);
             }
             return patientMapper.toDto(pExistsEntity);
@@ -102,27 +96,25 @@ public class PatientServices {
 
     @Transactional
     public PatientDTO updatePatient(Long id, PatientDTO patient) {
-       var existingP = patientRepository.findById(id);
-       if(existingP.isEmpty()){
-           throw new EntityUpdateException("Patient to be updated doesn't exist");
-       }
-       else{
-           var existingPEntity = existingP.get();
-           Patient updatedP = new Patient(id, patient.firstName,patient.lastName,
-                   existingPEntity.getDateOfBirth(), patient.phoneNumber,
-                   existingPEntity.getInsuranceNumber());
-           patientRepository.save(updatedP);
-           return patientMapper.toDto(updatedP);
-       }
+        var existingP = patientRepository.findById(id);
+        if (existingP.isEmpty()) {
+            throw new EntityUpdateException("Patient to be updated doesn't exist");
+        } else {
+            var existingPEntity = existingP.get();
+            Patient updatedP = new Patient(id, patient.firstName, patient.lastName,
+                    existingPEntity.getDateOfBirth(), patient.phoneNumber,
+                    existingPEntity.getInsuranceNumber());
+            patientRepository.save(updatedP);
+            return patientMapper.toDto(updatedP);
+        }
     }
 
     @Transactional
     public PatientDTO updatePatientStatus(Long id, Boolean status) {
         var existingP = patientRepository.findById(id);
-        if(existingP.isEmpty()){
+        if (existingP.isEmpty()) {
             throw new EntityUpdateException("Patient to be updated doesn't exist");
-        }
-        else{
+        } else {
             var existingPEntity = existingP.get();
             existingPEntity.setStatus(status);
             patientRepository.save(existingPEntity);
@@ -130,14 +122,14 @@ public class PatientServices {
         }
     }
 
-    //isPresent() returns true or false before actually calling .get() on the object preventing nullPointerExceptions
-    //That's why I don't use isEmpty()
-    public PatientDTO FindPatientById(Long id){
+    // isPresent() returns true or false before actually calling .get() on the
+    // object preventing nullPointerExceptions
+    // That's why I don't use isEmpty()
+    public PatientDTO getPatientById(Long id) {
         var patient = patientRepository.findById(id);
-        if (patient.isPresent()){
+        if (patient.isPresent()) {
             return patientMapper.toDto(patient.get());
-        }
-        else{
+        } else {
             throw new EntityNotFoundException("Patient with id " + id + " doesn't exist.");
         }
     }
