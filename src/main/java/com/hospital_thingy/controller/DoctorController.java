@@ -2,7 +2,6 @@ package com.hospital_thingy.controller;
 
 import java.util.List;
 
-
 import com.hospital_thingy.entity.Doctor;
 import com.hospital_thingy.exception.EntityCreationException;
 import com.hospital_thingy.exception.EntityUpdateException;
@@ -41,14 +40,12 @@ public class DoctorController {
         return doctorService.getDoctorById(id);
     }
 
-    @GetMapping("/search-last-name")
-    public List<DoctorDTO> getDoctorsByLastName (@RequestParam String lastName){
+    @GetMapping("/search")
+    public List<DoctorDTO> search(@RequestParam(required = false) String firstName, String lastName) {
+        if (firstName != null) {
+            return doctorService.getDoctorByName(firstName, lastName);
+        }
         return doctorService.getDoctorByName(lastName);
-    }
-
-    @GetMapping("/search-name")
-    public List<DoctorDTO> getDoctorsByFullName (@RequestParam String firstName, String lastName){
-        return doctorService.getDoctorByName(firstName, lastName);
     }
 
     // create doctor

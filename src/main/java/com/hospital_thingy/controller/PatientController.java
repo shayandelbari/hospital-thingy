@@ -51,24 +51,20 @@ public class PatientController {
         return patientService.getPatientMedicalRecord(patientId);
     }
 
-    @GetMapping("/search-dob")
-    public List<PatientDTO> getPatientsByDOB (@RequestParam LocalDate dob){
-        return patientService.getPatientByDOB(dob);
-    }
-
-    @GetMapping("/search-last-name")
-    public List<PatientDTO> getPatientsByLastName (@RequestParam String lastName){
-        return patientService.getPatientByName(lastName);
-    }
-
-    @GetMapping("/search-name")
-    public List<PatientDTO> getPatientsByFullName (@RequestParam String firstName, String lastName){
-        return patientService.getPatientByName(firstName,lastName);
-    }
-
-    @GetMapping("/search-ins-number")
-    public PatientDTO getPatientsByInsuranceNumber (@RequestParam String insuranceNumber){
-        return patientService.getPatientByInsuranceNumber(insuranceNumber);
+    @GetMapping("/search")
+    public List<PatientDTO> search(@RequestParam(required = false) LocalDate dob,
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName, @RequestParam(required = false) String insuranceNumber) {
+        if (dob != null) {
+            return patientService.getPatientByDOB(dob);
+        } else if (firstName != null && lastName != null) {
+            return patientService.getPatientByName(firstName, lastName);
+        } else if (lastName != null) {
+            return patientService.getPatientByName(lastName);
+        } else if (insuranceNumber != null) {
+            return List.of(patientService.getPatientByInsuranceNumber(insuranceNumber));
+        }
+        throw new IllegalArgumentException("At least one search parameter must be provided.");
     }
 
     @PostMapping
