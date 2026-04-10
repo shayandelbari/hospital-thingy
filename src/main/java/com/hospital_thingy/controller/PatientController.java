@@ -51,22 +51,22 @@ public class PatientController {
         return patientService.getPatientMedicalRecord(patientId);
     }
 
-    @GetMapping("/search")
+    @GetMapping("/search-dob")
     public List<PatientDTO> getPatientsByDOB (@RequestParam LocalDate dob){
         return patientService.getPatientByDOB(dob);
     }
 
-    @GetMapping("/search")
-    public List<PatientDTO> getPatientsByName (@RequestParam String lastName){
+    @GetMapping("/search-last-name")
+    public List<PatientDTO> getPatientsByLastName (@RequestParam String lastName){
         return patientService.getPatientByName(lastName);
     }
 
-    @GetMapping("/search")
-    public List<PatientDTO> getPatientsByName (@RequestParam String firstName, String lastName){
+    @GetMapping("/search-name")
+    public List<PatientDTO> getPatientsByFullName (@RequestParam String firstName, String lastName){
         return patientService.getPatientByName(firstName,lastName);
     }
 
-    @GetMapping("/search")
+    @GetMapping("/search-ins-number")
     public PatientDTO getPatientsByInsuranceNumber (@RequestParam String insuranceNumber){
         return patientService.getPatientByInsuranceNumber(insuranceNumber);
     }

@@ -41,13 +41,13 @@ public class DoctorController {
         return doctorService.getDoctorById(id);
     }
 
-    @GetMapping("/search")
-    public List<DoctorDTO> getDoctorsByName (@RequestParam String lastName){
+    @GetMapping("/search-last-name")
+    public List<DoctorDTO> getDoctorsByLastName (@RequestParam String lastName){
         return doctorService.getDoctorByName(lastName);
     }
 
-    @GetMapping("/search")
-    public List<DoctorDTO> getDoctorsByName (@RequestParam String firstName, String lastName){
+    @GetMapping("/search-name")
+    public List<DoctorDTO> getDoctorsByFullName (@RequestParam String firstName, String lastName){
         return doctorService.getDoctorByName(firstName, lastName);
     }
 

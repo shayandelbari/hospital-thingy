@@ -55,7 +55,25 @@ public class MedicalRecordServices {
                 .orElseThrow( () -> new EntityNotFoundException("Cannot find the requested Medical Record"));
 
     }
+    /*
+    public List<MedicalRecordDTO> getMedicalRecordsByAppointmentId(Long appointmentId) {
 
+
+
+
+        * public List<PatientDTO> getPatientByName(String firstName,  String lastName) {
+        Patient probe = new Patient();
+        probe.setLastName(lastName);
+        probe.setFirstName(firstName);
+
+        ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues().withIgnoreCase();
+
+        Example<Patient> example = Example.of(probe, matcher);
+
+        return patientMapper.toDtoList(patientRepository.findAll(example));
+
+    }
+*/
 
 
     public void createMedicalRecord(MedicalRecordDTO rec) {
