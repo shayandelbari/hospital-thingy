@@ -2,11 +2,7 @@ package com.hospital_thingy.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.hospital_thingy.DTO.MedicalRecordDTO;
 import com.hospital_thingy.service.MedicalRecordServices;
@@ -36,7 +32,13 @@ public class MedicalRecordController {
 
     // Dynamic URL example: GET /api/medical-records/3
     @GetMapping("/{id}")
-    public List<MedicalRecordDTO> getMedicalRecordByPathVariable(@PathVariable Long id) {
-        return medicalRecordService.getMedicalRecordById(id).toList();
+    public MedicalRecordDTO getMedicalRecordById(@RequestParam Long recordId) {
+        return medicalRecordService.getMedicalRecordById(recordId);
     }
+
+    @PostMapping
+    public void addMedicalRecord(@RequestBody MedicalRecordDTO record) {
+       medicalRecordService.createMedicalRecord(record);
+    }
+
 }

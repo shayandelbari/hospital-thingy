@@ -8,6 +8,7 @@ import com.hospital_thingy.exception.EntityCreationException;
 import com.hospital_thingy.mapper.MedicalRecordMapper;
 import com.hospital_thingy.repository.AppointmentRepository;
 import com.hospital_thingy.repository.MedicalRecordRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,11 +50,14 @@ public class MedicalRecordServices {
                 .toList();
     }
 
-    public Stream<MedicalRecordDTO> getMedicalRecordById(Long id) {
+    public MedicalRecordDTO getMedicalRecordById(Long id) {
         return medicalRecordRepository.findById(id)
-                .stream()
-                .map(medicalRecordMapper::toDto);
+                .map(medicalRecordMapper::toDto)
+                .orElseThrow( () -> new EntityNotFoundException("Cannot find the requested Medical Record"));
+
     }
+
+
 
     public void createMedicalRecord(MedicalRecordDTO rec) {
 
