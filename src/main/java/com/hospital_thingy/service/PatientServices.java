@@ -11,11 +11,14 @@ import com.hospital_thingy.exception.EntityUpdateException;
 import com.hospital_thingy.mapper.AppointmentMapper;
 import com.hospital_thingy.mapper.MedicalRecordMapper;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import com.hospital_thingy.mapper.PatientMapper;
 import com.hospital_thingy.repository.PatientRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -134,4 +137,35 @@ public class PatientServices {
         }
     }
 
+    public List<PatientDTO> getPatientByDOB(LocalDate dob){
+        return patientMapper.toDtoList(patientRepository.findByDateOfBirth(dob));
+    }
+
+    public PatientDTO getPatientByInsuranceNumber(String insuranceNumber){
+        return patientMapper.toDto(patientRepository.findByInsuranceNumber(insuranceNumber)
+                .orElseThrow(() -> new EntityNotFoundException("Unable to find any patients with this Insurance Number")));
+    }
+
+    public List<PatientDTO> getPatientByName(String lastName){
+        Patient probe = new Patient();
+        probe.setLastName(lastName);
+
+        ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues().withIgnoreCase();
+
+        Example<Patient> example = Example.of(probe, matcher);
+
+        return patientMapper.toDtoList(patientRepository.findAll(example));
+    }
+
+    public List<PatientDTO> getPatientByName(String firstName,  String lastName) {
+        Patient probe = new Patient();
+        probe.setLastName(lastName);
+        probe.setFirstName(firstName);
+
+        ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues().withIgnoreCase();
+
+        Example<Patient> example = Example.of(probe, matcher);
+
+        return patientMapper.toDtoList(patientRepository.findAll(example));
+    }
 }

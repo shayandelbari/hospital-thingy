@@ -2,6 +2,7 @@ package com.hospital_thingy.controller;
 
 import java.util.List;
 
+
 import com.hospital_thingy.entity.Doctor;
 import com.hospital_thingy.exception.EntityCreationException;
 import com.hospital_thingy.exception.EntityUpdateException;
@@ -38,6 +39,16 @@ public class DoctorController {
     @GetMapping("/{id}")
     public DoctorDTO getDoctorById(@PathVariable Long id) {
         return doctorService.getDoctorById(id);
+    }
+
+    @GetMapping("/search")
+    public List<DoctorDTO> getDoctorsByName (@RequestParam String lastName){
+        return doctorService.getDoctorByName(lastName);
+    }
+
+    @GetMapping("/search")
+    public List<DoctorDTO> getDoctorsByName (@RequestParam String firstName, String lastName){
+        return doctorService.getDoctorByName(firstName, lastName);
     }
 
     // create doctor

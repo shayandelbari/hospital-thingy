@@ -1,5 +1,6 @@
 package com.hospital_thingy.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.hospital_thingy.exception.EntityCreationException;
@@ -48,6 +49,26 @@ public class PatientController {
     @GetMapping("/{patientId}/records")
     public List<MedicalRecordDTO> getPatientMedicalRecordsByPathVariable(@PathVariable Long patientId) {
         return patientService.getPatientMedicalRecord(patientId);
+    }
+
+    @GetMapping("/search")
+    public List<PatientDTO> getPatientsByDOB (@RequestParam LocalDate dob){
+        return patientService.getPatientByDOB(dob);
+    }
+
+    @GetMapping("/search")
+    public List<PatientDTO> getPatientsByName (@RequestParam String lastName){
+        return patientService.getPatientByName(lastName);
+    }
+
+    @GetMapping("/search")
+    public List<PatientDTO> getPatientsByName (@RequestParam String firstName, String lastName){
+        return patientService.getPatientByName(firstName,lastName);
+    }
+
+    @GetMapping("/search")
+    public PatientDTO getPatientsByInsuranceNumber (@RequestParam String insuranceNumber){
+        return patientService.getPatientByInsuranceNumber(insuranceNumber);
     }
 
     @PostMapping

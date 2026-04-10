@@ -11,6 +11,8 @@ import com.hospital_thingy.mapper.DoctorMapper;
 import com.hospital_thingy.repository.AppointmentRepository;
 import com.hospital_thingy.repository.DoctorRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -109,5 +111,30 @@ public class DoctorServices {
             throw new EntityNotFoundException("Doctor doesn't exist in the current data");
         }
     }
+
+    public List<DoctorDTO> getDoctorByName(String lastName){
+        Doctor probe = new Doctor();
+        probe.setLastName(lastName);
+
+        ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues().withIgnoreCase();
+
+        Example<Doctor> example = Example.of(probe, matcher);
+
+        return doctorMapper.toDtoList(doctorRepository.findAll(example));
+    }
+
+    public List<DoctorDTO> getDoctorByName(String firstName, String lastName){
+        Doctor probe = new Doctor();
+        probe.setLastName(lastName);
+        probe.setFirstName(firstName);
+
+        ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues().withIgnoreCase();
+
+        Example<Doctor> example = Example.of(probe, matcher);
+
+        return doctorMapper.toDtoList(doctorRepository.findAll(example));
+    }
+
+
 
 }
