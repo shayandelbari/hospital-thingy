@@ -47,7 +47,7 @@ public class PatientController {
 
     // Dynamic URL example: GET /api/patients/5/records
     @GetMapping("/{patientId}/records")
-    public List<MedicalRecordDTO> getPatientMedicalRecordsByPathVariable(@PathVariable Long patientId) {
+    public List<MedicalRecordDTO> getPatientMedicalRecords(@PathVariable Long patientId) {
         return patientService.getPatientMedicalRecord(patientId);
     }
 
@@ -69,6 +69,9 @@ public class PatientController {
 
     @PostMapping
     public PatientDTO createPatient(@RequestBody PatientDTO patient) {
+        if (!checkInput(patient)) {
+            throw new EntityCreationException("First and/or last name arguments are not in the correct format.");
+        }
         return patientService.createPatient(patient);
     }
 

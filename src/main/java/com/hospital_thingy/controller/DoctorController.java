@@ -41,7 +41,7 @@ public class DoctorController {
     }
 
     @GetMapping("/search")
-    public List<DoctorDTO> search(@RequestParam(required = false) String firstName, String lastName) {
+    public List<DoctorDTO> search(@RequestParam(required = false) String firstName, @RequestParam String lastName) {
         if (firstName != null) {
             return doctorService.getDoctorByName(firstName, lastName);
         }

@@ -5,6 +5,7 @@ import com.hospital_thingy.DTO.DoctorDTO;
 import com.hospital_thingy.entity.Doctor;
 import com.hospital_thingy.exception.DeletionFailedException;
 import com.hospital_thingy.exception.DuplicateFoundException;
+import com.hospital_thingy.exception.EntityCreationException;
 import com.hospital_thingy.exception.EntityNotFoundException;
 import com.hospital_thingy.mapper.AppointmentMapper;
 import com.hospital_thingy.mapper.DoctorMapper;
@@ -47,13 +48,16 @@ public class DoctorServices {
 
     // CRUD Doctor
     public DoctorDTO createDoctor(DoctorDTO doctor) {
-        try {
-            doctorExists(doctor);
-            throw new DuplicateFoundException("Doctor already exists");
-        } catch (EntityNotFoundException e) {
-            var savedDoctor = doctorRepository.save(doctorMapper.toEntity(doctor));
-            return doctorMapper.toDto(savedDoctor);
+        if (doctor.id != null) {
+            throw new EntityCreationException("Doctor id must be null when creating a doctor.");
         }
+
+        if (doctorRepository.findByLicenseNumber(doctor.licenseNumber).isPresent()) {
+            throw new DuplicateFoundException("Doctor with license " + doctor.licenseNumber + " already exists.");
+        }
+
+        var savedDoctor = doctorRepository.save(doctorMapper.toEntity(doctor));
+        return doctorMapper.toDto(savedDoctor);
 
     }
 
@@ -112,7 +116,7 @@ public class DoctorServices {
         }
     }
 
-    public List<DoctorDTO> getDoctorByName(String lastName){
+    public List<DoctorDTO> getDoctorByName(String lastName) {
         Doctor probe = new Doctor();
         probe.setLastName(lastName);
 
@@ -123,7 +127,7 @@ public class DoctorServices {
         return doctorMapper.toDtoList(doctorRepository.findAll(example));
     }
 
-    public List<DoctorDTO> getDoctorByName(String firstName, String lastName){
+    public List<DoctorDTO> getDoctorByName(String firstName, String lastName) {
         Doctor probe = new Doctor();
         probe.setLastName(lastName);
         probe.setFirstName(firstName);
@@ -134,7 +138,5 @@ public class DoctorServices {
 
         return doctorMapper.toDtoList(doctorRepository.findAll(example));
     }
-
-
 
 }
