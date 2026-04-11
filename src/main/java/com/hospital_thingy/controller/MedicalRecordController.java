@@ -29,8 +29,9 @@ public class MedicalRecordController {
     }
 
     @PostMapping
-    public void addMedicalRecord(@RequestBody VitalSignDTO record) {
-        medicalRecordService.createMedicalRecord(record);
+    public MedicalRecordDTO addVitalSign(@RequestBody VitalSignDTO record) {
+        return medicalRecordService.createMedicalRecord(record);
+
     }
     //B/c we are expecting a viatal sign DTO in the above, if we had other children classed to POST, we would need them to each have unique identifiers
     // b/c that is not the case, i left the annotation as the default

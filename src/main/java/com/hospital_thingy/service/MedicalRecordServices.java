@@ -1,5 +1,6 @@
 package com.hospital_thingy.service;
 
+import com.hospital_thingy.DTO.ImagingDTO;
 import com.hospital_thingy.DTO.MedicalRecordDTO;
 import com.hospital_thingy.DTO.VitalSignDTO;
 import com.hospital_thingy.entity.Appointment;
@@ -57,7 +58,7 @@ public class MedicalRecordServices {
     }
     /*
     public List<MedicalRecordDTO> getMedicalRecordsByAppointmentId(Long appointmentId) {
-
+    }
 
 
 
@@ -76,7 +77,7 @@ public class MedicalRecordServices {
 */
 
 
-    public void createMedicalRecord(MedicalRecordDTO rec) {
+    public MedicalRecordDTO createMedicalRecord(MedicalRecordDTO rec) {
 
         /*
          * VALIDATIONS:
@@ -149,13 +150,19 @@ public class MedicalRecordServices {
 
                 VitalSign temp = (VitalSign) medicalRecordMapper.toEntity(rec);
                 temp.setAppointment(appt.get());
-                medicalRecordRepository.save(temp);
+
+                var saved = medicalRecordRepository.save(temp);
+                return medicalRecordMapper.toDto(saved);
             }
 
-            /*
-             * else // rec is an instance of Imaging
-             * {
-             * //TODO in next Sprint:
+
+            else if  (rec instanceof ImagingDTO)
+            {
+                throw new EntityCreationException ("Imaging is not supported yet");
+            }
+
+            /* {
+             *
              * // - accept only the valid types of images (png, jpeg, etc.)
              * // - convert image file to byte[] before passing it to the repository layer
              * 
@@ -163,7 +170,7 @@ public class MedicalRecordServices {
              * line based UI → this will only really make sense to implement once we have a
              * GUI
              * 
-             * // TODO when implementing - convert DTO to Imaging Entity
+             * //when implementing - convert DTO to Imaging Entity
              * Imaging temp = (Imaging) medicalRecordMapper.toEntity(rec);
              * medicalRecordRepository.save(temp);
              * 
@@ -173,5 +180,6 @@ public class MedicalRecordServices {
             throw new RuntimeException(e);
         }
 
+        throw new EntityCreationException("Cannot create Medical Record");
     }
 }
