@@ -58,20 +58,20 @@ public class DoctorServices {
     }
 
     @Transactional
-    public void deleteDoctor(Long id) {
+    public DoctorDTO deleteDoctor(Long id) {
         var delDoctor = doctorRepository.findById(id);
         if (delDoctor.isEmpty()) {
             throw new DeletionFailedException("Doctor with id " + id + " does not exist.");
-        } else {
+        }
+        else {
             var doctor = delDoctor.get();
             if (doctor.getAppointments() != null && !doctor.getAppointments().isEmpty()) {
                 throw new DeletionFailedException(
                         "Doctor with id " + id + " has an appointment in the records. Doctor can't be deleted.");
             }
-
             doctorRepository.deleteById(id);
         }
-
+        return doctorMapper.toDto(delDoctor.get());
     }
 
     @Transactional
@@ -103,10 +103,10 @@ public class DoctorServices {
         throw new EntityNotFoundException("Doctor with id " + id + " not found");
     }
 
-    public DoctorDTO doctorExists(DoctorDTO doctor) {
+    public void doctorExists(DoctorDTO doctor) {
         var existingDoctor = doctorRepository.findById(doctor.id);
         if (existingDoctor.isPresent()) {
-            return doctorMapper.toDto(existingDoctor.get());
+            doctorMapper.toDto(existingDoctor.get());
         } else {
             throw new EntityNotFoundException("Doctor doesn't exist in the current data");
         }
