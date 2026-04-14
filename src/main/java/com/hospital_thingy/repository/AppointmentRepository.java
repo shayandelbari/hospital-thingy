@@ -52,5 +52,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
       @Param("blockedStatuses") Set<Appointment.Status> blockedStatuses);
 
   @Query("SELECT m FROM MedicalRecord m WHERE m.appointment.id = :appointmentId")
-  List<MedicalRecord> findMedicalRecordsById(Long appointmentId);
+  List<MedicalRecord> findMedicalRecordsById(@Param("appointmentId") Long appointmentId);
 }
