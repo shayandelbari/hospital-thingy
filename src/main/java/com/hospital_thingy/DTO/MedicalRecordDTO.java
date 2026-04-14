@@ -1,7 +1,15 @@
 package com.hospital_thingy.DTO;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import java.time.LocalDateTime;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
+@JsonSubTypes({
+        @JsonSubTypes.Type(VitalSignDTO.class),
+        @JsonSubTypes.Type(ImagingDTO.class)
+})
 public abstract class MedicalRecordDTO {
     public Long id;
     public LocalDateTime dateTime;

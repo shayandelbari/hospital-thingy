@@ -2,7 +2,6 @@ package com.hospital_thingy.controller;
 
 import java.util.List;
 
-import com.hospital_thingy.DTO.VitalSignDTO;
 import org.springframework.web.bind.annotation.*;
 
 import com.hospital_thingy.DTO.MedicalRecordDTO;
@@ -29,11 +28,12 @@ public class MedicalRecordController {
     }
 
     @PostMapping
-    public MedicalRecordDTO addVitalSign(@RequestBody VitalSignDTO record) {
+    public MedicalRecordDTO addVitalSign(@RequestBody MedicalRecordDTO record) {
         return medicalRecordService.createMedicalRecord(record);
 
     }
-    //B/c we are expecting a viatal sign DTO in the above, if we had other children classed to POST, we would need them to each have unique identifiers
+    // B/c we are expecting a viatal sign DTO in the above, if we had other children
+    // classed to POST, we would need them to each have unique identifiers
     // b/c that is not the case, i left the annotation as the default
 
 }
