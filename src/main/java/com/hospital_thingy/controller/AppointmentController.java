@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,27 +65,27 @@ public class AppointmentController {
         return appointmentService.getById(id);
     }
 
-    @PostMapping("/{id}/reschedule")
+    @PutMapping("/{id}/reschedule")
     public AppointmentDTO rescheduleAppointment(@PathVariable Long id, @RequestBody AppointmentDTO appointment) {
         return appointmentService.rescheduleAppointment(id, appointment);
     }
 
-    @PostMapping("/{id}/start")
+    @PutMapping("/{id}/start")
     public AppointmentDTO startAppointment(@PathVariable Long id) {
         return appointmentService.startAppointment(id);
     }
 
-    @PostMapping("/{id}/complete")
+    @PutMapping("/{id}/complete")
     public AppointmentDTO completeAppointment(@PathVariable Long id) {
         return appointmentService.completeAppointment(id);
     }
 
-    @PostMapping("/{id}/cancel")
+    @PutMapping("/{id}/cancel")
     public AppointmentDTO cancelAppointment(@PathVariable Long id) {
         return appointmentService.cancelAppointment(id);
     }
 
-    @PostMapping("/{id}/postpone")
+    @PutMapping("/{id}/postpone")
     public AppointmentDTO postponeAppointment(@PathVariable Long id) {
         return appointmentService.postponeAppointment(id);
     }
